@@ -20,16 +20,17 @@ under the License.
 package main
 
 import (
-	"errors"
-	"fmt"
-	"time"
-	"encoding/json"
-	"strconv"
-	"github.com/op/go-logging"
-	"github.com/hyperledger/fabric/core/chaincode/shim"
+        "errors"
+        "fmt"
+        "time"
+        "encoding/json"
+        "strconv"
+//      "github.com/op/go-logging"
+        "github.com/hyperledger/fabric/core/chaincode/shim"
+//      "github.com/hyperledger/fabric/core/chaincode/shim/crypto/attr"
 )
 
-var myLogger = logging.MustGetLogger("trading")
+// var myLogger = logging.MustGetLogger("trading")
 
 // TradeChaincode example simple Asset Management Chaincode implementation
 // with access control enforcement at chaincode level.
@@ -39,745 +40,783 @@ var myLogger = logging.MustGetLogger("trading")
 type TradeChaincode struct {
 }
 
-// åœ¨åº«ãƒã‚¹ã‚¿ã€å–å¼•ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’ä½œæˆã™ã‚‹
-// 
+// İŒÉƒ}ƒXƒ^Aæˆøƒe[ƒuƒ‹‚ğì¬‚·‚é
+//
 func (t *TradeChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
-	myLogger.Info("[TradeChaincode] Init")
-	if len(args) != 0 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 0")
-	}
-	
-	// Create åœ¨åº«ãƒã‚¹ã‚¿ã‚’ä½œæˆã™ã‚‹
-	// ãƒ†ãƒ¼ãƒ–ãƒ«åï¼šstock
-	err_stock := stub.CreateTable("stock", []*shim.ColumnDefinition{
-		&shim.ColumnDefinition{"key_system_code", shim.ColumnDefinition_STRING, true},
-		&shim.ColumnDefinition{"key_product_code", shim.ColumnDefinition_STRING, true},
-		&shim.ColumnDefinition{"value_current_stock", shim.ColumnDefinition_INT64, false},
-		&shim.ColumnDefinition{"value_allocate_stock", shim.ColumnDefinition_INT64, false},
-		&shim.ColumnDefinition{"value_backorder_stock", shim.ColumnDefinition_INT64, false},
-	})
-	if err_stock != nil {
-		return nil, errors.New("Failed creating stock table.")
-	}
+//      myLogger.Info("[TradeChaincode] Init")
+        if len(args) != 0 {
+                return nil, errors.New("Incorrect number of arguments. Expecting 0")
+        }
 
-	// Create å–å¼•ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’ä½œæˆã™ã‚‹
-	// ãƒ†ãƒ¼ãƒ–ãƒ«åï¼šorder
-	err_order := stub.CreateTable("order", []*shim.ColumnDefinition{
-		&shim.ColumnDefinition{"key_system_code", shim.ColumnDefinition_STRING, true},
-		&shim.ColumnDefinition{"key_UUID", shim.ColumnDefinition_STRING, true},
-		&shim.ColumnDefinition{"key_orderer_code", shim.ColumnDefinition_STRING, true},
-		&shim.ColumnDefinition{"key_accepter_code", shim.ColumnDefinition_STRING, true},
-		&shim.ColumnDefinition{"key_product_code", shim.ColumnDefinition_STRING, true},
-		&shim.ColumnDefinition{"value_order_amount", shim.ColumnDefinition_INT64, false},
-		&shim.ColumnDefinition{"value_order_status", shim.ColumnDefinition_STRING, false},
-		&shim.ColumnDefinition{"value_last_updated_by", shim.ColumnDefinition_STRING, false},
-		&shim.ColumnDefinition{"value_last_updated_datetime", shim.ColumnDefinition_STRING, false},
-	})
-	
-	if err_order != nil {
-		return nil, errors.New("Failed creating order table.")
-	}
+        // Create İŒÉƒ}ƒXƒ^‚ğì¬‚·‚é
+        // ƒe[ƒuƒ‹–¼Fstock
+        err_stock := stub.CreateTable("stock", []*shim.ColumnDefinition{
+                &shim.ColumnDefinition{"key_system_code", shim.ColumnDefinition_STRING, true},
+                &shim.ColumnDefinition{"key_product_code", shim.ColumnDefinition_STRING, true},
+                &shim.ColumnDefinition{"value_current_stock", shim.ColumnDefinition_INT64, false},
+                &shim.ColumnDefinition{"value_allocate_stock", shim.ColumnDefinition_INT64, false},
+                &shim.ColumnDefinition{"value_backorder_stock", shim.ColumnDefinition_INT64, false},
+        })
+        if err_stock != nil {
+                return nil, errors.New("Failed creating stock table.")
+        }
 
-	myLogger.Info("ãƒ†ãƒ¼ãƒ–ãƒ«ç™»éŒ²å®Œäº†")
-	return nil, nil
+        // Create æˆøƒe[ƒuƒ‹‚ğì¬‚·‚é
+        // ƒe[ƒuƒ‹–¼Forder
+        err_order := stub.CreateTable("order", []*shim.ColumnDefinition{
+                &shim.ColumnDefinition{"key_system_code", shim.ColumnDefinition_STRING, true},
+                &shim.ColumnDefinition{"key_UUID", shim.ColumnDefinition_STRING, true},
+                &shim.ColumnDefinition{"key_orderer_code", shim.ColumnDefinition_STRING, true},
+                &shim.ColumnDefinition{"key_accepter_code", shim.ColumnDefinition_STRING, true},
+                &shim.ColumnDefinition{"key_product_code", shim.ColumnDefinition_STRING, true},
+                &shim.ColumnDefinition{"value_order_amount", shim.ColumnDefinition_INT64, false},
+                &shim.ColumnDefinition{"value_order_status", shim.ColumnDefinition_STRING, false},
+                &shim.ColumnDefinition{"value_last_updated_by", shim.ColumnDefinition_STRING, false},
+                &shim.ColumnDefinition{"value_last_updated_datetime", shim.ColumnDefinition_STRING, false},
+        })
+
+
+        if err_order != nil {
+                return nil, errors.New("Failed creating order table.")
+        }
+
+//      myLogger.Info("ƒe[ƒuƒ‹“o˜^Š®—¹")
+
+        // Set the role of the users that are allowed to assign assets
+        // The metadata will contain the role of the users that are allowed to assign assets
+        assignerRole, err := stub.GetCallerMetadata()
+        fmt.Printf("Assiger role is %v\n", string(assignerRole))
+
+        if err != nil {
+                return nil, fmt.Errorf("Failed getting metadata, [%v]", err)
+        }
+
+        if len(assignerRole) == 0 {
+                return nil, errors.New("Invalid assigner role. Empty.")
+        }
+
+        stub.PutState("assignerRole", assignerRole)
+
+        return nil, nil
 
 }
 
-//  åœ¨åº«ãƒã‚¹ã‚¿ã«ãƒ‡ãƒ¼ã‚¿ã‚’ç™»éŒ²ã™ã‚‹
-//   å¼•æ•°ï¼šå•†å“ã‚³ãƒ¼ãƒ‰,åœ¨åº«æ•°
+//  İŒÉƒ}ƒXƒ^‚Éƒf[ƒ^‚ğ“o˜^‚·‚é
+//   ˆø”F¤•iƒR[ƒh,İŒÉ”
 
 func (t *TradeChaincode) register(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
-	if len(args) != 4 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 4")
-	}
-	
-	var value_current_stock, value_allocate_stock, value_backorder_stock int64
-	var key_product_code string
-	key_product_code    = args[0]
-	value_current_stock, err1   := strconv.ParseInt(args[1], 10, 64)
-	value_allocate_stock, err2  := strconv.ParseInt(args[2], 10, 64)
-	value_backorder_stock, err3 := strconv.ParseInt(args[3], 10, 64)
-	if err1 != nil {
-		return nil, errors.New("Expecting integer value for asset holding")
-	} else if err2 != nil {
-		return nil, errors.New("Expecting integer value for asset holding")
-	} else if err3 != nil {
-		return nil, errors.New("Expecting integer value for asset holding")
-	}
-	key_system_code := "stock_management"
+        if len(args) != 4 {
+                return nil, errors.New("Incorrect number of arguments. Expecting 4")
+        }
 
-	// åœ¨åº«ãƒã‚¹ã‚¿ã‚’ç™»éŒ²ã™ã‚‹
-	ok, err := stub.InsertRow("stock", shim.Row{
-		Columns: []*shim.Column{
-			&shim.Column{Value: &shim.Column_String_{String_: key_system_code}},
-			&shim.Column{Value: &shim.Column_String_{String_: key_product_code}},
-			&shim.Column{Value: &shim.Column_Int64{Int64: value_current_stock}},
-			&shim.Column{Value: &shim.Column_Int64{Int64: value_allocate_stock}},
-			&shim.Column{Value: &shim.Column_Int64{Int64: value_backorder_stock}},
-		},
-	})
+        var value_current_stock, value_allocate_stock, value_backorder_stock int64
+        var key_product_code string
+        key_product_code    = args[0]
+        value_current_stock, err1   := strconv.ParseInt(args[1], 10, 64)
+        value_allocate_stock, err2  := strconv.ParseInt(args[2], 10, 64)
+        value_backorder_stock, err3 := strconv.ParseInt(args[3], 10, 64)
+        if err1 != nil {
+                return nil, errors.New("Expecting integer value for asset holding")
+        } else if err2 != nil {
+                return nil, errors.New("Expecting integer value for asset holding")
+        } else if err3 != nil {
+                return nil, errors.New("Expecting integer value for asset holding")
+        }
+        key_system_code := "stock_management"
 
-	if err != nil {
-		return nil, errors.New("Failed inserting row.")
-	}
+        // İŒÉƒ}ƒXƒ^‚ğ“o˜^‚·‚é
+        ok, err := stub.InsertRow("stock", shim.Row{
+                Columns: []*shim.Column{
+                        &shim.Column{Value: &shim.Column_String_{String_: key_system_code}},
+                        &shim.Column{Value: &shim.Column_String_{String_: key_product_code}},
+                        &shim.Column{Value: &shim.Column_Int64{Int64: value_current_stock}},
+                        &shim.Column{Value: &shim.Column_Int64{Int64: value_allocate_stock}},
+                        &shim.Column{Value: &shim.Column_Int64{Int64: value_backorder_stock}},
+                },
+        })
 
-	if !ok {
-		return nil, errors.New("insertRow operation failed. Row with given key already exists")
-	}
+        if err != nil {
+                return nil, errors.New("Failed inserting row.")
+        }
 
-	return nil, nil
+        if !ok {
+                return nil, errors.New("insertRow operation failed. Row with given key already exists")
+        }
+
+        return nil, nil
 }
 
 
-//  åœ¨åº«ãƒã‚¹ã‚¿ã®ãƒ‡ãƒ¼ã‚¿ã‚’æ›´æ–°ã™ã‚‹
-//   å¼•æ•°ï¼šå•†å“ã‚³ãƒ¼ãƒ‰,åœ¨åº«è¿½åŠ æ•°
+//  İŒÉƒ}ƒXƒ^‚Ìƒf[ƒ^‚ğXV‚·‚é
+//   ˆø”F¤•iƒR[ƒh,İŒÉ’Ç‰Á”
 
 func (t *TradeChaincode) update(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
-	if len(args) != 2 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 2")
-	}
+        if len(args) != 2 {
+                return nil, errors.New("Incorrect number of arguments. Expecting 2")
+        }
 
-	var stock_add, current_stock, allocate_stock, backorder_stock int64
-	var product_code string
-	product_code    = args[0]
-	stock_add, err := strconv.ParseInt(args[1], 10, 64)
-	if err != nil {
-		return nil, errors.New("Expecting integer value for asset holding")
-	}
-	key_system_code := "stock_management"
+        var stock_add, current_stock, allocate_stock, backorder_stock int64
+        var product_code string
+        product_code    = args[0]
+        stock_add, err := strconv.ParseInt(args[1], 10, 64)
+        if err != nil {
+                return nil, errors.New("Expecting integer value for asset holding")
+        }
+        key_system_code := "stock_management"
 
-	var stock_columns []shim.Column
-	s_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
-	s_col2 := shim.Column{Value: &shim.Column_String_{String_: product_code}}
-	stock_columns = append(stock_columns, s_col1)
-	stock_columns = append(stock_columns, s_col2)
-	
-	myLogger.Debug("s_col1ã®å†…å®¹ã‚’ç¢ºèªã™ã‚‹ã€‚ [%s] ", s_col1)
-	myLogger.Debug("s_col2ã®å†…å®¹ã‚’ç¢ºèªã™ã‚‹ã€‚ [%s] ", s_col2)
+        var stock_columns []shim.Column
+        s_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
+        s_col2 := shim.Column{Value: &shim.Column_String_{String_: product_code}}
+        stock_columns = append(stock_columns, s_col1)
+        stock_columns = append(stock_columns, s_col2)
 
-	row, err := stub.GetRow("stock", stock_columns)
+//      myLogger.Debug("s_col1‚Ì“à—e‚ğŠm”F‚·‚éB [%s] ", s_col1)
+//      myLogger.Debug("s_col2‚Ì“à—e‚ğŠm”F‚·‚éB [%s] ", s_col2)
 
-	if err != nil {
-		jsonResp := "{\"Error\":\"Failed retrieveing product_code " + product_code + ". Error " + err.Error() + ". \"}"
-		return nil, errors.New(jsonResp)
-	}
+        row, err := stub.GetRow("stock", stock_columns)
 
-//	current_stock, err2 := strconv.ParseInt(string(row.Columns[1].GetBytes()), 10, 64)
-//	if err2 != nil {
-//		return nil, errors.New("data not found")
-//	}
-	current_stock   = row.Columns[2].GetInt64()
-	allocate_stock  = row.Columns[3].GetInt64()
-	backorder_stock = row.Columns[4].GetInt64()
-	
+        if err != nil {
+                jsonResp := "{\"Error\":\"Failed retrieveing product_code " + product_code + ". Error " + err.Error() + ". \"}"
+                return nil, errors.New(jsonResp)
+        }
 
-	if current_stock == 0 {
-		return nil, fmt.Errorf("Invalid åœ¨åº«æ•°. 0")
-	}
+//      current_stock, err2 := strconv.ParseInt(string(row.Columns[1].GetBytes()), 10, 64)
+//      if err2 != nil {
+//              return nil, errors.New("data not found")
+//      }
+        current_stock   = row.Columns[2].GetInt64()
+        allocate_stock  = row.Columns[3].GetInt64()
+        backorder_stock = row.Columns[4].GetInt64()
 
-	// ç¾åœ¨åº«ã«å¼•æ•°ï¼åœ¨åº«è¿½åŠ æ•°ã‚’åŠ ç®—
-	current_stock = current_stock + stock_add
 
-	var columns []*shim.Column
-	col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
-	col2 := shim.Column{Value: &shim.Column_String_{String_: product_code}}
-	col3 := shim.Column{Value: &shim.Column_Int64{Int64: current_stock}}
-	col4 := shim.Column{Value: &shim.Column_Int64{Int64: allocate_stock}}
-	col5 := shim.Column{Value: &shim.Column_Int64{Int64: backorder_stock}}
-//	col2 := shim.Column{Value: &shim.Column_Int64{Int64: []byte(strconv.Itoa(current_stock))}}
+        if current_stock == 0 {
+                return nil, fmt.Errorf("Invalid İŒÉ”. 0")
+        }
 
-	columns = append(columns, &col1)
-	columns = append(columns, &col2)
-	columns = append(columns, &col3)
-	columns = append(columns, &col4)
-	columns = append(columns, &col5)
-	new_row := shim.Row{Columns: columns}
+        // Œ»İŒÉ‚Éˆø”DİŒÉ’Ç‰Á”‚ğ‰ÁZ
+        current_stock = current_stock + stock_add
 
-	ok, err := stub.ReplaceRow("stock", new_row)
+        var columns []*shim.Column
+        col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
+        col2 := shim.Column{Value: &shim.Column_String_{String_: product_code}}
+        col3 := shim.Column{Value: &shim.Column_Int64{Int64: current_stock}}
+        col4 := shim.Column{Value: &shim.Column_Int64{Int64: allocate_stock}}
+        col5 := shim.Column{Value: &shim.Column_Int64{Int64: backorder_stock}}
+//      col2 := shim.Column{Value: &shim.Column_Int64{Int64: []byte(strconv.Itoa(current_stock))}}
 
-	if err != nil {
-		return nil, errors.New("Failed inserting row.")
-	}
+        columns = append(columns, &col1)
+        columns = append(columns, &col2)
+        columns = append(columns, &col3)
+        columns = append(columns, &col4)
+        columns = append(columns, &col5)
+        new_row := shim.Row{Columns: columns}
 
-	if !ok {
-		return nil, errors.New("ReplaceRow operation failed. Row with given key does not exist")
-	}
+        ok, err := stub.ReplaceRow("stock", new_row)
 
-	return nil, nil
+        if err != nil {
+                return nil, errors.New("Failed inserting row.")
+        }
+
+        if !ok {
+                return nil, errors.New("ReplaceRow operation failed. Row with given key does not exist")
+        }
+
+        return nil, nil
 }
 
 // Query callback representing the query of a chaincode
 func (t *TradeChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
-	switch function {
+        switch function {
 
-		case "stock_search":
+                case "stock_search":
 
-			var err error
+                        var err error
 
-			if len(args) != 1 {
-				return nil, errors.New("Incorrect number of arguments. Expecting name of an search key to query")
-			}
+                        if len(args) != 1 {
+                                return nil, errors.New("Incorrect number of arguments. Expecting name of an search key to query")
+                        }
 
-			search_key := args[0]
+                        search_key := args[0]
 
-			var columns []shim.Column
-			col1 := shim.Column{Value: &shim.Column_String_{String_: search_key}}
-			columns = append(columns, col1)
+                        var columns []shim.Column
+                        col1 := shim.Column{Value: &shim.Column_String_{String_: search_key}}
+                        columns = append(columns, col1)
 
-			rowChannel, err := stub.GetRows("stock", columns)
-			if err != nil {
-				jsonResp := "{\"Error\":\"Failed retrieveing search_key " + search_key + ". Error " + err.Error() + ". \"}"
-				return nil, errors.New(jsonResp)
-			}
+                        rowChannel, err := stub.GetRows("stock", columns)
+                        if err != nil {
+                                jsonResp := "{\"Error\":\"Failed retrieveing search_key " + search_key + ". Error " + err.Error() + ". \"}"
+                                return nil, errors.New(jsonResp)
+                        }
 
-			// æ§‹é€ ä½“ã®å®šç¾©
-			type res_stock_search struct {
-				Key_product_code string // å•†å“ã‚³ãƒ¼ãƒ‰
-				Value_current_stock int64 // ç¾åœ¨åº«æ•°
-				Value_allocate_stock int64 // å¼•å½“æ•°
-				Value_backorder_stock int64 // ç™ºæ³¨æ®‹æ•°
-			}
+                        // \‘¢‘Ì‚Ì’è‹`
+                        type res_stock_search struct {
+                                Key_product_code string // ¤•iƒR[ƒh
+                                Value_current_stock int64 // Œ»İŒÉ”
+                                Value_allocate_stock int64 // ˆø“–”
+                                Value_backorder_stock int64 // ”­’c”
+                        }
 
-			var rows []shim.Row
-			var myResponces []res_stock_search
+                        var rows []shim.Row
+                        var myResponces []res_stock_search
 
-			for {
-				select {
-				case row, ok := <-rowChannel:
-					if !ok {
-						rowChannel = nil
-					} else {
-						// æ–‡å­—åˆ—å‹ã®å ´åˆ.GetString_()ã‚’ä½¿ã†
-						var myRes res_stock_search
-						myRes.Key_product_code      = row.Columns[1].GetString_()
-						myRes.Value_current_stock   = row.Columns[2].GetInt64()
-						myRes.Value_allocate_stock  = row.Columns[3].GetInt64()
-						myRes.Value_backorder_stock = row.Columns[4].GetInt64()
+                        for {
+                                select {
+                                case row, ok := <-rowChannel:
+                                        if !ok {
+                                                rowChannel = nil
+                                        } else {
+                                                // •¶š—ñŒ^‚Ìê‡.GetString_()‚ğg‚¤
+                                                var myRes res_stock_search
+                                                myRes.Key_product_code      = row.Columns[1].GetString_()
+                                                myRes.Value_current_stock   = row.Columns[2].GetInt64()
+                                                myRes.Value_allocate_stock  = row.Columns[3].GetInt64()
+                                                myRes.Value_backorder_stock = row.Columns[4].GetInt64()
 
-						myResponces = append(myResponces, myRes)
+                                                myResponces = append(myResponces, myRes)
 
-						rows = append(rows, row)
-					}
-				}
-				if rowChannel == nil {
-					break
-				}
-			}
+                                                rows = append(rows, row)
+                                        }
+                                }
+                                if rowChannel == nil {
+                                        break
+                                }
+                        }
 
-			//JSONå‹ã«ã™ã‚‹ã€‚
-			jsonRows, err := json.Marshal(myResponces)
-			if err != nil {
-				return nil, fmt.Errorf("stock_search operation failed. Error marshaling JSON: %s", err)
-			}
+                        //JSONŒ^‚É‚·‚éB
+                        jsonRows, err := json.Marshal(myResponces)
+                        if err != nil {
+                                return nil, fmt.Errorf("stock_search operation failed. Error marshaling JSON: %s", err)
+                        }
 
-			return jsonRows, nil
+                        return jsonRows, nil
 
-		case "order_search":
+                case "order_search":
 
-			var err error
+                        var err error
 
-			if len(args) != 1 {
-				return nil, errors.New("Incorrect number of arguments. Expecting name of an search key to query")
-			}
+                        if len(args) != 1 {
+                                return nil, errors.New("Incorrect number of arguments. Expecting name of an search key to query")
+                        }
 
-			search_key := args[0]
+                        search_key := args[0]
 
-			var columns []shim.Column
-			col1 := shim.Column{Value: &shim.Column_String_{String_: search_key}}
-			columns = append(columns, col1)
+                        var columns []shim.Column
+                        col1 := shim.Column{Value: &shim.Column_String_{String_: search_key}}
+                        columns = append(columns, col1)
 
-			rowChannel, err := stub.GetRows("order", columns)
-			if err != nil {
-				jsonResp := "{\"Error\":\"Failed retrieveing search_key " + search_key + ". Error " + err.Error() + ". \"}"
-				return nil, errors.New(jsonResp)
-			}
+                        rowChannel, err := stub.GetRows("order", columns)
+                        if err != nil {
+                                jsonResp := "{\"Error\":\"Failed retrieveing search_key " + search_key + ". Error " + err.Error() + ". \"}"
+                                return nil, errors.New(jsonResp)
+                        }
 
-			// æ§‹é€ ä½“ã®å®šç¾©
-			type res_order_search struct {
-				UUID string // ç•ªå·
-				Key_orderer_code string // æ³¨æ–‡è€…
-				Key_accepter_code string // å—æ³¨è€…
-				Key_product_code string // å•†å“ã‚³ãƒ¼ãƒ‰
-				Value_order_amount int64 // å–å¼•æ•°
-				Value_order_status string // å–å¼•çŠ¶æ…‹
-				Value_last_updated_by string // æœ€çµ‚æ›´æ–°è€…
-				Value_last_updated_datetime string // æœ€çµ‚æ›´æ–°æ—¥æ™‚
-			}
+                        // \‘¢‘Ì‚Ì’è‹`
+                        type res_order_search struct {
+                                UUID string // ”Ô†
+                                Key_orderer_code string // ’•¶Ò
+                                Key_accepter_code string // ó’Ò
+                                Key_product_code string // ¤•iƒR[ƒh
+                                Value_order_amount int64 // æˆø”
+                                Value_order_status string // æˆøó‘Ô
+                                Value_last_updated_by string // ÅIXVÒ
+                                Value_last_updated_datetime string // ÅIXV“ú
+                        }
 
-			var myResponces []res_order_search
+                        var myResponces []res_order_search
 
-			for {
-				select {
-				case row, ok := <-rowChannel:
-					if !ok {
-						rowChannel = nil
-					} else {
-						// æ–‡å­—åˆ—å‹ã®å ´åˆ.GetString_()ã‚’ä½¿ã†
-						var myRes res_order_search
-						myRes.UUID    = row.Columns[1].GetString_()
-						myRes.Key_orderer_code  = row.Columns[2].GetString_()
-						myRes.Key_accepter_code = row.Columns[3].GetString_()
-						myRes.Key_product_code = row.Columns[4].GetString_()
-						myRes.Value_order_amount = row.Columns[5].GetInt64()
-						myRes.Value_order_status = row.Columns[6].GetString_()
-						myRes.Value_last_updated_by = row.Columns[7].GetString_()
-						myRes.Value_last_updated_datetime = row.Columns[8].GetString_()
+                        for {
+                                select {
+                                case row, ok := <-rowChannel:
+                                        if !ok {
+                                                rowChannel = nil
+                                        } else {
+                                                // •¶š—ñŒ^‚Ìê‡.GetString_()‚ğg‚¤
+                                                var myRes res_order_search
+                                                myRes.UUID    = row.Columns[1].GetString_()
+                                                myRes.Key_orderer_code  = row.Columns[2].GetString_()
+                                                myRes.Key_accepter_code = row.Columns[3].GetString_()
+                                                myRes.Key_product_code = row.Columns[4].GetString_()
+                                                myRes.Value_order_amount = row.Columns[5].GetInt64()
+                                                myRes.Value_order_status = row.Columns[6].GetString_()
+                                                myRes.Value_last_updated_by = row.Columns[7].GetString_()
+                                                myRes.Value_last_updated_datetime = row.Columns[8].GetString_()
 
-						myResponces = append(myResponces, myRes)
-						
-					}
-				}
-				if rowChannel == nil {
-					break
-				}
-			}
+                                                myResponces = append(myResponces, myRes)
 
-			//JSONå‹ã«ã™ã‚‹ã€‚
-			jsonRows, err := json.Marshal(myResponces)
-			if err != nil {
-				return nil, fmt.Errorf("order_search operation failed. Error marshaling JSON: %s", err)
-			}
+                                        }
+                                }
+                                if rowChannel == nil {
+                                        break
+                                }
+                        }
 
-			return jsonRows, nil
+                        //JSONŒ^‚É‚·‚éB
+                        jsonRows, err := json.Marshal(myResponces)
+                        if err != nil {
+                                return nil, fmt.Errorf("order_search operation failed. Error marshaling JSON: %s", err)
+                        }
 
-		case "order_row_search":
+                        return jsonRows, nil
 
-			var err error
+                case "order_row_search":
 
-			if len(args) != 2 {
-				return nil, errors.New("Incorrect number of arguments. Expecting name of an search key to query")
-			}
+                        var err error
 
-			search_key := args[0]
-			search_UUID := args[1]
+                        if len(args) != 2 {
+                                return nil, errors.New("Incorrect number of arguments. Expecting name of an search key to query")
+                        }
 
-			var columns []shim.Column
-			col1 := shim.Column{Value: &shim.Column_String_{String_: search_key}}
-			col2 := shim.Column{Value: &shim.Column_String_{String_: search_UUID}}
-			columns = append(columns, col1)
-			columns = append(columns, col2)
+                        search_key := args[0]
+                        search_UUID := args[1]
 
-			rowChannel, err := stub.GetRows("order", columns)
-			if err != nil {
-				jsonResp := "{\"Error\":\"Failed retrieveing search_key " + search_key + ". Error " + err.Error() + ". \"}"
-				return nil, errors.New(jsonResp)
-			}
+                        var columns []shim.Column
+                        col1 := shim.Column{Value: &shim.Column_String_{String_: search_key}}
+                        col2 := shim.Column{Value: &shim.Column_String_{String_: search_UUID}}
+                        columns = append(columns, col1)
+                        columns = append(columns, col2)
 
-			// æ§‹é€ ä½“ã®å®šç¾©
-			type res_order_search struct {
-				UUID string // ç•ªå·
-				Key_orderer_code string // æ³¨æ–‡è€…
-				Key_accepter_code string // å—æ³¨è€…
-				Key_product_code string // å•†å“ã‚³ãƒ¼ãƒ‰
-				Value_order_amount int64 // å–å¼•æ•°
-				Value_order_status string // å–å¼•çŠ¶æ…‹
-				Value_last_updated_by string // æœ€çµ‚æ›´æ–°è€…
-				Value_last_updated_datetime string // æœ€çµ‚æ›´æ–°æ—¥æ™‚
-			}
+                        rowChannel, err := stub.GetRows("order", columns)
+                        if err != nil {
+                                jsonResp := "{\"Error\":\"Failed retrieveing search_key " + search_key + ". Error " + err.Error() + ". \"}"
+                                return nil, errors.New(jsonResp)
+                        }
 
-			var myResponces []res_order_search
+                        // \‘¢‘Ì‚Ì’è‹`
+                        type res_order_search struct {
+                                UUID string // ”Ô†
+                                Key_orderer_code string // ’•¶Ò
+                                Key_accepter_code string // ó’Ò
+                                Key_product_code string // ¤•iƒR[ƒh
+                                Value_order_amount int64 // æˆø”
+                                Value_order_status string // æˆøó‘Ô
+                                Value_last_updated_by string // ÅIXVÒ
+                                Value_last_updated_datetime string // ÅIXV“ú
+                        }
 
-			for {
-				select {
-				case row, ok := <-rowChannel:
-					if !ok {
-						rowChannel = nil
-					} else {
-						// æ–‡å­—åˆ—å‹ã®å ´åˆ.GetString_()ã‚’ä½¿ã†
-						var myRes res_order_search
-						myRes.UUID    = row.Columns[1].GetString_()
-						myRes.Key_orderer_code  = row.Columns[2].GetString_()
-						myRes.Key_accepter_code = row.Columns[3].GetString_()
-						myRes.Key_product_code = row.Columns[4].GetString_()
-						myRes.Value_order_amount = row.Columns[5].GetInt64()
-						myRes.Value_order_status = row.Columns[6].GetString_()
-						myRes.Value_last_updated_by = row.Columns[7].GetString_()
-						myRes.Value_last_updated_datetime = row.Columns[8].GetString_()
+                        var myResponces []res_order_search
 
-						myResponces = append(myResponces, myRes)
-						
-					}
-				}
-				if rowChannel == nil {
-					break
-				}
-			}
+                        for {
+                                select {
+                                case row, ok := <-rowChannel:
+                                        if !ok {
+                                                rowChannel = nil
+                                        } else {
+                                                // •¶š—ñŒ^‚Ìê‡.GetString_()‚ğg‚¤
+                                                var myRes res_order_search
+                                                myRes.UUID    = row.Columns[1].GetString_()
+                                                myRes.Key_orderer_code  = row.Columns[2].GetString_()
+                                                myRes.Key_accepter_code = row.Columns[3].GetString_()
+                                                myRes.Key_product_code = row.Columns[4].GetString_()
+                                                myRes.Value_order_amount = row.Columns[5].GetInt64()
+                                                myRes.Value_order_status = row.Columns[6].GetString_()
+                                                myRes.Value_last_updated_by = row.Columns[7].GetString_()
+                                                myRes.Value_last_updated_datetime = row.Columns[8].GetString_()
 
-			//JSONå‹ã«ã™ã‚‹ã€‚
-			jsonRows, err := json.Marshal(myResponces)
-			if err != nil {
-				return nil, fmt.Errorf("order_search operation failed. Error marshaling JSON: %s", err)
-			}
+                                                myResponces = append(myResponces, myRes)
 
-			return jsonRows, nil
-			
-			
+                                        }
+                                }
+                                if rowChannel == nil {
+                                        break
+                                }
+                        }
+
+                        //JSONŒ^‚É‚·‚éB
+                        jsonRows, err := json.Marshal(myResponces)
+                        if err != nil {
+                                return nil, fmt.Errorf("order_search operation failed. Error marshaling JSON: %s", err)
+                        }
+
+                        return jsonRows, nil
+
+
         default:
-			return nil, errors.New("Unsupported operation")
-	}
+                        return nil, errors.New("Unsupported operation")
+        }
 }
 
 func (t *TradeChaincode) order_entry(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
-	if len(args) != 5 {
-		return nil, errors.New("å¼•æ•°ã¯5å€‹æŒ‡å®šã—ã¦ãã ã•ã„ã€‚")
-	}
+        if len(args) != 5 {
+                return nil, errors.New("ˆø”‚Í5ŒÂw’è‚µ‚Ä‚­‚¾‚³‚¢B")
+        }
 
-	var value_order_amount int64
-	var value_order_status, value_last_updated_datetime string
-	
-	key_orderer_code	:= args[0]
-	key_accepter_code	:= args[1]
-	key_product_code    := args[2]
-	value_order_amount,err := strconv.ParseInt(args[3], 10, 64)
-	if err != nil {
-        	return nil, errors.New("å–å¼•æ•°ã¯æ•°å­—ã‚’æŒ‡å®šã—ã¦ãã ã•ã„ã€‚")
-	}
-	value_last_updated_by	:= args[4]
-	value_order_status = "ACCEPTED"
-	if (value_order_amount < 1) {
-		return nil, fmt.Errorf("å–å¼•æ•°ã¯1ä»¥ä¸Šã‚’æŒ‡å®šã—ã¦ãã ã•ã„ã€‚å–å¼•æ•° [%d] ", value_order_amount )
-	}
+        var value_order_amount int64
+        var value_order_status, value_last_updated_datetime string
 
-	// å–å¼•å±¥æ­´ã‚’ç™»éŒ²ã™ã‚‹ã€‚
+        key_orderer_code        := args[0]
+        key_accepter_code       := args[1]
+        key_product_code    := args[2]
+        value_order_amount,err := strconv.ParseInt(args[3], 10, 64)
+        if err != nil {
+                return nil, errors.New("æˆø”‚Í”š‚ğw’è‚µ‚Ä‚­‚¾‚³‚¢B")
+        }
+        value_last_updated_by   := args[4]
+        value_order_status = "ACCEPTED"
+        if (value_order_amount < 1) {
+                return nil, fmt.Errorf("æˆø”‚Í1ˆÈã‚ğw’è‚µ‚Ä‚­‚¾‚³‚¢Bæˆø” [%d] ", value_order_amount )
+        }
 
-	// Valueã®å†…å®¹ã‚’JSONå½¢å¼ã§ç™»éŒ²ã™ã‚‹
-	const layout2 = "2006-01-02 15:04:05"
-	value_last_updated_datetime = time.Now().Format(layout2)
+        // Recover the role that is allowed to make assignments
+        assignerRole, err := stub.GetState("assignerRole")
+        if err != nil {
+                fmt.Printf("Error getting role [%v] \n", err)
+                return nil, errors.New("Failed fetching assigner role")
+        }
 
-	type order_table struct {
-		key_orderer_code  string
-		key_accepter_code string
-		key_product_code string
-		value_order_amount int64
-		value_order_status string
-		value_last_updated_by string
-		value_last_updated_datetime string
-	}
+        callerRole, err := stub.ReadCertAttribute("role")
+        if err != nil {
+                fmt.Printf("Error reading attribute [%v] \n", err)
+                return nil, fmt.Errorf("Failed fetching caller role. Error was [%v]", err)
+        }
 
-	UUID := stub.UUID
-	key_system_code := "stock_management"
+        caller := string(callerRole[:])
+        assigner := string(assignerRole[:])
 
-	_, err = stub.InsertRow("order", shim.Row{
-		Columns: []*shim.Column{
-			&shim.Column{Value: &shim.Column_String_{String_: key_system_code}},              // args[0]
-			&shim.Column{Value: &shim.Column_String_{String_: UUID}},                         // args[1]
-			&shim.Column{Value: &shim.Column_String_{String_: key_orderer_code}},             // args[2]
-			&shim.Column{Value: &shim.Column_String_{String_: key_accepter_code}},            // args[3] 
-			&shim.Column{Value: &shim.Column_String_{String_: key_product_code}},             // args[4]
-			&shim.Column{Value: &shim.Column_Int64{Int64: value_order_amount}},               // args[5]
-			&shim.Column{Value: &shim.Column_String_{String_: value_order_status}},           // args[6]
-			&shim.Column{Value: &shim.Column_String_{String_: value_last_updated_by}},        // args[7]
-			&shim.Column{Value: &shim.Column_String_{String_: value_last_updated_datetime}},  // args[8]
-		},
-	})
+        if caller != assigner {
+                fmt.Printf("Caller is not assigner - caller %v assigner %v\n", caller, assigner)
+                return nil, fmt.Errorf("The caller does not have the rights to invoke assign. Expected role [%v], caller role [%v]", assigner, caller)
+        }
 
-	if err != nil {
-		myLogger.Debug("error[%s]",err.Error())
-		return nil, errors.New("Failed inserting row.")
-	}
-	
-	return nil, nil
+        // æˆø—š—ğ‚ğ“o˜^‚·‚éB
+
+        // Value‚Ì“à—e‚ğJSONŒ`®‚Å“o˜^‚·‚é
+        const layout2 = "2006-01-02 15:04:05"
+        value_last_updated_datetime = time.Now().Format(layout2)
+
+        type order_table struct {
+                key_orderer_code  string
+                key_accepter_code string
+                key_product_code string
+                value_order_amount int64
+                value_order_status string
+                value_last_updated_by string
+                value_last_updated_datetime string
+        }
+
+        UUID := stub.UUID
+        key_system_code := "stock_management"
+
+        _, err = stub.InsertRow("order", shim.Row{
+                Columns: []*shim.Column{
+                        &shim.Column{Value: &shim.Column_String_{String_: key_system_code}},              // args[0]
+                        &shim.Column{Value: &shim.Column_String_{String_: UUID}},                         // args[1]
+                        &shim.Column{Value: &shim.Column_String_{String_: key_orderer_code}},             // args[2]
+                        &shim.Column{Value: &shim.Column_String_{String_: key_accepter_code}},            // args[3]
+                        &shim.Column{Value: &shim.Column_String_{String_: key_product_code}},             // args[4]
+                        &shim.Column{Value: &shim.Column_Int64{Int64: value_order_amount}},               // args[5]
+                        &shim.Column{Value: &shim.Column_String_{String_: value_order_status}},           // args[6]
+                        &shim.Column{Value: &shim.Column_String_{String_: value_last_updated_by}},        // args[7]
+                        &shim.Column{Value: &shim.Column_String_{String_: value_last_updated_datetime}},  // args[8]
+                },
+        })
+
+        if err != nil {
+//              myLogger.Debug("error[%s]",err.Error())
+                return nil, errors.New("Failed inserting row.")
+        }
+
+        return nil, nil
 }
 
 func (t *TradeChaincode) allocate_entry(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
-	
-	if len(args) != 2 {
-		return nil, errors.New("å¼•æ•°ã¯2å€‹æŒ‡å®šã—ã¦ãã ã•ã„ã€‚")
-	}
 
-	var value_order_amount, value_current_stock, value_allocate_stock int64
-	var UUID, key_orderer_code, key_accepter_code, key_product_code, value_order_status, value_last_updated_by, value_last_updated_datetime string
-	UUID = args[0]
-	value_last_updated_by = args[1]
-	key_system_code := "stock_management"
+        if len(args) != 2 {
+                return nil, errors.New("ˆø”‚Í2ŒÂw’è‚µ‚Ä‚­‚¾‚³‚¢B")
+        }
 
-	var order_columns []shim.Column
-	o_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
-	o_col2 := shim.Column{Value: &shim.Column_String_{String_: UUID}}
-	order_columns = append(order_columns, o_col1)
-	order_columns = append(order_columns, o_col2)
+        var value_order_amount, value_current_stock, value_allocate_stock int64
+        var UUID, key_orderer_code, key_accepter_code, key_product_code, value_order_status, value_last_updated_by, value_last_updated_datetime string
+        UUID = args[0]
+        value_last_updated_by = args[1]
+        key_system_code := "stock_management"
 
-	rowChannel, err := stub.GetRows("order", order_columns)
-	if err != nil {
-		return nil, errors.New("GetRowã§ã‚¨ãƒ©ãƒ¼")
-	}
+        var order_columns []shim.Column
+        o_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
+        o_col2 := shim.Column{Value: &shim.Column_String_{String_: UUID}}
+        order_columns = append(order_columns, o_col1)
+        order_columns = append(order_columns, o_col2)
 
-	for {
-		select {
-		case row, ok := <-rowChannel:
-			if !ok {
-				rowChannel = nil
-			} else {
-				key_orderer_code   = row.Columns[2].GetString_()
-				key_accepter_code  = row.Columns[3].GetString_()
-				key_product_code   = row.Columns[4].GetString_()
-				value_order_amount = row.Columns[5].GetInt64()
-				value_order_status = row.Columns[6].GetString_()
-			}
-		}
-		if rowChannel == nil {
-			break
-		}
-	}
+        rowChannel, err := stub.GetRows("order", order_columns)
+        if err != nil {
+                return nil, errors.New("GetRow‚ÅƒGƒ‰[")
+        }
 
-//	if key_product_code == nil {
-//		return nil, errors.New("å•†å“ã‚³ãƒ¼ãƒ‰ãŒå–å¾—ã§ãã¾ã›ã‚“")
-//	} else if value_order_amount == nil {
-//		return nil, errors.New("å–å¼•æ•°ãŒå–å¾—ã§ãã¾ã›ã‚“")
-//	} else if value_order_status != "ACCEPTED" {
-//		return nil, errors.New("å–å¼•çŠ¶æ…‹ãŒACCEPTEDã§ã¯ã‚ã‚Šã¾ã›ã‚“")
-//	}
-	
-	var stock_columns []shim.Column
-	s_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
-	s_col2 := shim.Column{Value: &shim.Column_String_{String_: key_product_code}}
-	stock_columns = append(stock_columns, s_col1)
-	stock_columns = append(stock_columns, s_col2)
+        for {
+                select {
+                case row, ok := <-rowChannel:
+                        if !ok {
+                                rowChannel = nil
+                        } else {
+                                key_orderer_code   = row.Columns[2].GetString_()
+                                key_accepter_code  = row.Columns[3].GetString_()
+                                key_product_code   = row.Columns[4].GetString_()
+                                value_order_amount = row.Columns[5].GetInt64()
+                                value_order_status = row.Columns[6].GetString_()
+                        }
+                }
+                if rowChannel == nil {
+                        break
+                }
+        }
 
-	s_row, err := stub.GetRow("stock", stock_columns)
+//      if key_product_code == nil {
+//              return nil, errors.New("¤•iƒR[ƒh‚ªæ“¾‚Å‚«‚Ü‚¹‚ñ")
+//      } else if value_order_amount == nil {
+//              return nil, errors.New("æˆø”‚ªæ“¾‚Å‚«‚Ü‚¹‚ñ")
+//      } else if value_order_status != "ACCEPTED" {
+//              return nil, errors.New("æˆøó‘Ô‚ªACCEPTED‚Å‚Í‚ ‚è‚Ü‚¹‚ñ")
+//      }
 
-	if err != nil {
-		return nil, errors.New("è©²å½“ã®å•†å“ã‚³ãƒ¼ãƒ‰ãŒåœ¨åº«ãƒã‚¹ã‚¿ã«ã‚ã‚Šã¾ã›ã‚“")
-	}
-	value_current_stock = s_row.Columns[2].GetInt64()
-	value_allocate_stock = s_row.Columns[3].GetInt64()
-//	if value_current_stock == nil {
-//		return nil, errors.New("ç¾åœ¨åº«æ•°ãŒå–å¾—ã§ãã¾ã›ã‚“")
-//	} else if value_allocate_stock = nil {
-//		return nil, errors.New("å¼•å½“æ•°ãŒå–å¾—ã§ãã¾ã›ã‚“")
-//	}
+        var stock_columns []shim.Column
+        s_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
+        s_col2 := shim.Column{Value: &shim.Column_String_{String_: key_product_code}}
+        stock_columns = append(stock_columns, s_col1)
+        stock_columns = append(stock_columns, s_col2)
 
-	//ç¾åœ¨åº«æ•° ï¼ å¼•å½“æ•° ï¼ å–å¼•æ•° ã®ãƒã‚§ãƒƒã‚¯
-	if value_current_stock - value_allocate_stock < value_order_amount {
-		return nil, errors.New("ç¾åœ¨åº«æ•°ãŒè¶³ã‚Šã¾ã›ã‚“")
-	}
+        s_row, err := stub.GetRow("stock", stock_columns)
 
-	// åœ¨åº«ãƒã‚¹ã‚¿æ›´æ–°
-	value_allocate_stock = value_allocate_stock + value_order_amount
+        if err != nil {
+                return nil, errors.New("ŠY“–‚Ì¤•iƒR[ƒh‚ªİŒÉƒ}ƒXƒ^‚É‚ ‚è‚Ü‚¹‚ñ")
+        }
+        value_current_stock = s_row.Columns[2].GetInt64()
+        value_allocate_stock = s_row.Columns[3].GetInt64()
+//      if value_current_stock == nil {
+//              return nil, errors.New("Œ»İŒÉ”‚ªæ“¾‚Å‚«‚Ü‚¹‚ñ")
+//      } else if value_allocate_stock = nil {
+//              return nil, errors.New("ˆø“–”‚ªæ“¾‚Å‚«‚Ü‚¹‚ñ")
+//      }
 
-	var s_columns []*shim.Column
-	upd_s_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
-	upd_s_col2 := shim.Column{Value: &shim.Column_String_{String_: key_product_code}}
-	upd_s_col3 := shim.Column{Value: &shim.Column_Int64{Int64: value_current_stock}}
-	upd_s_col4 := shim.Column{Value: &shim.Column_Int64{Int64: value_allocate_stock}}
-	upd_s_col5 := shim.Column{Value: &shim.Column_Int64{Int64: s_row.Columns[4].GetInt64()}}
+        //Œ»İŒÉ” | ˆø“–” „ æˆø” ‚Ìƒ`ƒFƒbƒN
+        if value_current_stock - value_allocate_stock < value_order_amount {
+                return nil, errors.New("Œ»İŒÉ”‚ª‘«‚è‚Ü‚¹‚ñ")
+        }
 
-	s_columns = append(s_columns, &upd_s_col1)
-	s_columns = append(s_columns, &upd_s_col2)
-	s_columns = append(s_columns, &upd_s_col3)
-	s_columns = append(s_columns, &upd_s_col4)
-	s_columns = append(s_columns, &upd_s_col5)
-	new_s_row := shim.Row{Columns: s_columns}
-	
-	ok, err := stub.ReplaceRow("stock", new_s_row)
+        // İŒÉƒ}ƒXƒ^XV
+        value_allocate_stock = value_allocate_stock + value_order_amount
 
-	if err != nil {
-		return nil, errors.New("Failed inserting row.")
-	}
+        var s_columns []*shim.Column
+        upd_s_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
+        upd_s_col2 := shim.Column{Value: &shim.Column_String_{String_: key_product_code}}
+        upd_s_col3 := shim.Column{Value: &shim.Column_Int64{Int64: value_current_stock}}
+        upd_s_col4 := shim.Column{Value: &shim.Column_Int64{Int64: value_allocate_stock}}
+        upd_s_col5 := shim.Column{Value: &shim.Column_Int64{Int64: s_row.Columns[4].GetInt64()}}
 
-	if !ok {
-		return nil, errors.New("ReplaceRow operation failed. Row with given key does not exist")
-	}
-	
-	myLogger.Info("åœ¨åº«å¼•å½“å®Œäº†")
+        s_columns = append(s_columns, &upd_s_col1)
+        s_columns = append(s_columns, &upd_s_col2)
+        s_columns = append(s_columns, &upd_s_col3)
+        s_columns = append(s_columns, &upd_s_col4)
+        s_columns = append(s_columns, &upd_s_col5)
+        new_s_row := shim.Row{Columns: s_columns}
 
-	// å–å¼•ãƒ‡ãƒ¼ã‚¿æ›´æ–°
-	value_order_status = "ALLOCATED"
-	const layout2 = "2006-01-02 15:04:05"
-	value_last_updated_datetime = time.Now().Format(layout2)
-	
-	var o_columns []*shim.Column
-	upd_o_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
-	upd_o_col2 := shim.Column{Value: &shim.Column_String_{String_: UUID}}
-	upd_o_col3 := shim.Column{Value: &shim.Column_String_{String_: key_orderer_code}}
-	upd_o_col4 := shim.Column{Value: &shim.Column_String_{String_: key_accepter_code}}
-	upd_o_col5 := shim.Column{Value: &shim.Column_String_{String_: key_product_code}}
-	upd_o_col6 := shim.Column{Value: &shim.Column_Int64{Int64: value_order_amount}}
-	upd_o_col7 := shim.Column{Value: &shim.Column_String_{String_: value_order_status}}
-	upd_o_col8 := shim.Column{Value: &shim.Column_String_{String_: value_last_updated_by}}
-	upd_o_col9 := shim.Column{Value: &shim.Column_String_{String_: value_last_updated_datetime}}
+        ok, err := stub.ReplaceRow("stock", new_s_row)
 
-	o_columns = append(o_columns, &upd_o_col1)
-	o_columns = append(o_columns, &upd_o_col2)
-	o_columns = append(o_columns, &upd_o_col3)
-	o_columns = append(o_columns, &upd_o_col4)
-	o_columns = append(o_columns, &upd_o_col5)
-	o_columns = append(o_columns, &upd_o_col6)
-	o_columns = append(o_columns, &upd_o_col7)
-	o_columns = append(o_columns, &upd_o_col8)
-	o_columns = append(o_columns, &upd_o_col9)
-	new_o_row := shim.Row{Columns: o_columns}
-	
-	ok2, err := stub.ReplaceRow("order", new_o_row)
+        if err != nil {
+                return nil, errors.New("Failed inserting row.")
+        }
 
-	if err != nil {
-		return nil, errors.New("Failed inserting row.")
-	}
+        if !ok {
+                return nil, errors.New("ReplaceRow operation failed. Row with given key does not exist")
+        }
 
-	if !ok2 {
-		return nil, errors.New("ReplaceRow operation failed. Row with given key does not exist")
-	}
+//      myLogger.Info("İŒÉˆø“–Š®—¹")
 
-	return nil, nil
+        // æˆøƒf[ƒ^XV
+        value_order_status = "ALLOCATED"
+        const layout2 = "2006-01-02 15:04:05"
+        value_last_updated_datetime = time.Now().Format(layout2)
+
+        var o_columns []*shim.Column
+        upd_o_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
+        upd_o_col2 := shim.Column{Value: &shim.Column_String_{String_: UUID}}
+        upd_o_col3 := shim.Column{Value: &shim.Column_String_{String_: key_orderer_code}}
+        upd_o_col4 := shim.Column{Value: &shim.Column_String_{String_: key_accepter_code}}
+        upd_o_col5 := shim.Column{Value: &shim.Column_String_{String_: key_product_code}}
+        upd_o_col6 := shim.Column{Value: &shim.Column_Int64{Int64: value_order_amount}}
+        upd_o_col7 := shim.Column{Value: &shim.Column_String_{String_: value_order_status}}
+        upd_o_col8 := shim.Column{Value: &shim.Column_String_{String_: value_last_updated_by}}
+        upd_o_col9 := shim.Column{Value: &shim.Column_String_{String_: value_last_updated_datetime}}
+
+        o_columns = append(o_columns, &upd_o_col1)
+        o_columns = append(o_columns, &upd_o_col2)
+        o_columns = append(o_columns, &upd_o_col3)
+        o_columns = append(o_columns, &upd_o_col4)
+        o_columns = append(o_columns, &upd_o_col5)
+        o_columns = append(o_columns, &upd_o_col6)
+        o_columns = append(o_columns, &upd_o_col7)
+        o_columns = append(o_columns, &upd_o_col8)
+        o_columns = append(o_columns, &upd_o_col9)
+        new_o_row := shim.Row{Columns: o_columns}
+
+        ok2, err := stub.ReplaceRow("order", new_o_row)
+
+        if err != nil {
+                return nil, errors.New("Failed inserting row.")
+        }
+
+        if !ok2 {
+                return nil, errors.New("ReplaceRow operation failed. Row with given key does not exist")
+        }
+
+        return nil, nil
 }
 
 func (t *TradeChaincode) shipment_entry(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
-	
-	if len(args) != 2 {
-		return nil, errors.New("å¼•æ•°ã¯2å€‹æŒ‡å®šã—ã¦ãã ã•ã„ã€‚")
-	}
 
-	var value_order_amount, value_current_stock, value_allocate_stock int64
-	var UUID, key_orderer_code, key_accepter_code, key_product_code, value_order_status, value_last_updated_by, value_last_updated_datetime string
-	UUID = args[0]
-	value_last_updated_by = args[1]
-	key_system_code := "stock_management"
+        if len(args) != 2 {
+                return nil, errors.New("ˆø”‚Í2ŒÂw’è‚µ‚Ä‚­‚¾‚³‚¢B")
+        }
 
-	var order_columns []shim.Column
-	o_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
-	o_col2 := shim.Column{Value: &shim.Column_String_{String_: UUID}}
-	order_columns = append(order_columns, o_col1)
-	order_columns = append(order_columns, o_col2)
+        var value_order_amount, value_current_stock, value_allocate_stock int64
+        var UUID, key_orderer_code, key_accepter_code, key_product_code, value_order_status, value_last_updated_by, value_last_updated_datetime string
+        UUID = args[0]
+        value_last_updated_by = args[1]
+        key_system_code := "stock_management"
 
-	rowChannel, err := stub.GetRows("order", order_columns)
-	if err != nil {
-		return nil, errors.New("GetRowã§ã‚¨ãƒ©ãƒ¼")
-	}
+        var order_columns []shim.Column
+        o_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
+        o_col2 := shim.Column{Value: &shim.Column_String_{String_: UUID}}
+        order_columns = append(order_columns, o_col1)
+        order_columns = append(order_columns, o_col2)
 
-	for {
-		select {
-		case row, ok := <-rowChannel:
-			if !ok {
-				rowChannel = nil
-			} else {
-				key_orderer_code   = row.Columns[2].GetString_()
-				key_accepter_code  = row.Columns[3].GetString_()
-				key_product_code   = row.Columns[4].GetString_()
-				value_order_amount = row.Columns[5].GetInt64()
-				value_order_status = row.Columns[6].GetString_()
-			}
-		}
-		if rowChannel == nil {
-			break
-		}
-	}
-	
-	var stock_columns []shim.Column
-	s_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
-	s_col2 := shim.Column{Value: &shim.Column_String_{String_: key_product_code}}
-	stock_columns = append(stock_columns, s_col1)
-	stock_columns = append(stock_columns, s_col2)
+        rowChannel, err := stub.GetRows("order", order_columns)
+        if err != nil {
+                return nil, errors.New("GetRow‚ÅƒGƒ‰[")
+        }
 
-	s_row, err := stub.GetRow("stock", stock_columns)
+        for {
+                select {
+                case row, ok := <-rowChannel:
+                        if !ok {
+                                rowChannel = nil
+                        } else {
+                                key_orderer_code   = row.Columns[2].GetString_()
+                                key_accepter_code  = row.Columns[3].GetString_()
+                                key_product_code   = row.Columns[4].GetString_()
+                                value_order_amount = row.Columns[5].GetInt64()
+                                value_order_status = row.Columns[6].GetString_()
+                        }
+                }
+                if rowChannel == nil {
+                        break
+                }
+        }
 
-	if err != nil {
-		return nil, errors.New("è©²å½“ã®å•†å“ã‚³ãƒ¼ãƒ‰ãŒåœ¨åº«ãƒã‚¹ã‚¿ã«ã‚ã‚Šã¾ã›ã‚“")
-	}
-	value_current_stock = s_row.Columns[2].GetInt64()
-	value_allocate_stock = s_row.Columns[3].GetInt64()
+        var stock_columns []shim.Column
+        s_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
+        s_col2 := shim.Column{Value: &shim.Column_String_{String_: key_product_code}}
+        stock_columns = append(stock_columns, s_col1)
+        stock_columns = append(stock_columns, s_col2)
 
-	//ç¾åœ¨åº«æ•° ï¼ å–å¼•æ•° ã®ãƒã‚§ãƒƒã‚¯
-	if value_current_stock < value_order_amount {
-		return nil, errors.New("ç¾åœ¨åº«æ•°ãŒè¶³ã‚Šã¾ã›ã‚“")
-	}
+        s_row, err := stub.GetRow("stock", stock_columns)
 
-	// åœ¨åº«ãƒã‚¹ã‚¿æ›´æ–°
-	value_current_stock = value_current_stock - value_order_amount
-	value_allocate_stock = value_allocate_stock - value_order_amount
+        if err != nil {
+                return nil, errors.New("ŠY“–‚Ì¤•iƒR[ƒh‚ªİŒÉƒ}ƒXƒ^‚É‚ ‚è‚Ü‚¹‚ñ")
+        }
+        value_current_stock = s_row.Columns[2].GetInt64()
+        value_allocate_stock = s_row.Columns[3].GetInt64()
 
-	var s_columns []*shim.Column
-	upd_s_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
-	upd_s_col2 := shim.Column{Value: &shim.Column_String_{String_: key_product_code}}
-	upd_s_col3 := shim.Column{Value: &shim.Column_Int64{Int64: value_current_stock}}
-	upd_s_col4 := shim.Column{Value: &shim.Column_Int64{Int64: value_allocate_stock}}
-	upd_s_col5 := shim.Column{Value: &shim.Column_Int64{Int64: s_row.Columns[4].GetInt64()}}
+        //Œ»İŒÉ” „ æˆø” ‚Ìƒ`ƒFƒbƒN
+        if value_current_stock < value_order_amount {
+                return nil, errors.New("Œ»İŒÉ”‚ª‘«‚è‚Ü‚¹‚ñ")
+        }
 
-	s_columns = append(s_columns, &upd_s_col1)
-	s_columns = append(s_columns, &upd_s_col2)
-	s_columns = append(s_columns, &upd_s_col3)
-	s_columns = append(s_columns, &upd_s_col4)
-	s_columns = append(s_columns, &upd_s_col5)
-	new_s_row := shim.Row{Columns: s_columns}
-	
-	ok, err := stub.ReplaceRow("stock", new_s_row)
+        // İŒÉƒ}ƒXƒ^XV
+        value_current_stock = value_current_stock - value_order_amount
+        value_allocate_stock = value_allocate_stock - value_order_amount
 
-	if err != nil {
-		return nil, errors.New("Failed inserting row.")
-	}
+        var s_columns []*shim.Column
+        upd_s_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
+        upd_s_col2 := shim.Column{Value: &shim.Column_String_{String_: key_product_code}}
+        upd_s_col3 := shim.Column{Value: &shim.Column_Int64{Int64: value_current_stock}}
+        upd_s_col4 := shim.Column{Value: &shim.Column_Int64{Int64: value_allocate_stock}}
+        upd_s_col5 := shim.Column{Value: &shim.Column_Int64{Int64: s_row.Columns[4].GetInt64()}}
 
-	if !ok {
-		return nil, errors.New("ReplaceRow operation failed. Row with given key does not exist")
-	}
-	
-	myLogger.Info("å‡ºè·å®Œäº†")
+        s_columns = append(s_columns, &upd_s_col1)
+        s_columns = append(s_columns, &upd_s_col2)
+        s_columns = append(s_columns, &upd_s_col3)
+        s_columns = append(s_columns, &upd_s_col4)
+        s_columns = append(s_columns, &upd_s_col5)
+        new_s_row := shim.Row{Columns: s_columns}
 
-	// å–å¼•ãƒ‡ãƒ¼ã‚¿æ›´æ–°
-	value_order_status = "SHIPPED"
-	const layout2 = "2006-01-02 15:04:05"
-	value_last_updated_datetime = time.Now().Format(layout2)
-	
-	var o_columns []*shim.Column
-	upd_o_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
-	upd_o_col2 := shim.Column{Value: &shim.Column_String_{String_: UUID}}
-	upd_o_col3 := shim.Column{Value: &shim.Column_String_{String_: key_orderer_code}}
-	upd_o_col4 := shim.Column{Value: &shim.Column_String_{String_: key_accepter_code}}
-	upd_o_col5 := shim.Column{Value: &shim.Column_String_{String_: key_product_code}}
-	upd_o_col6 := shim.Column{Value: &shim.Column_Int64{Int64: value_order_amount}}
-	upd_o_col7 := shim.Column{Value: &shim.Column_String_{String_: value_order_status}}
-	upd_o_col8 := shim.Column{Value: &shim.Column_String_{String_: value_last_updated_by}}
-	upd_o_col9 := shim.Column{Value: &shim.Column_String_{String_: value_last_updated_datetime}}
+        ok, err := stub.ReplaceRow("stock", new_s_row)
 
-	o_columns = append(o_columns, &upd_o_col1)
-	o_columns = append(o_columns, &upd_o_col2)
-	o_columns = append(o_columns, &upd_o_col3)
-	o_columns = append(o_columns, &upd_o_col4)
-	o_columns = append(o_columns, &upd_o_col5)
-	o_columns = append(o_columns, &upd_o_col6)
-	o_columns = append(o_columns, &upd_o_col7)
-	o_columns = append(o_columns, &upd_o_col8)
-	o_columns = append(o_columns, &upd_o_col9)
-	new_o_row := shim.Row{Columns: o_columns}
-	
-	ok2, err := stub.ReplaceRow("order", new_o_row)
+        if err != nil {
+                return nil, errors.New("Failed inserting row.")
+        }
 
-	if err != nil {
-		return nil, errors.New("Failed inserting row.")
-	}
+        if !ok {
+                return nil, errors.New("ReplaceRow operation failed. Row with given key does not exist")
+        }
 
-	if !ok2 {
-		return nil, errors.New("ReplaceRow operation failed. Row with given key does not exist")
-	}
+//      myLogger.Info("o‰×Š®—¹")
 
-	return nil, nil
+        // æˆøƒf[ƒ^XV
+        value_order_status = "SHIPPED"
+        const layout2 = "2006-01-02 15:04:05"
+        value_last_updated_datetime = time.Now().Format(layout2)
+
+        var o_columns []*shim.Column
+        upd_o_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
+        upd_o_col2 := shim.Column{Value: &shim.Column_String_{String_: UUID}}
+        upd_o_col3 := shim.Column{Value: &shim.Column_String_{String_: key_orderer_code}}
+        upd_o_col4 := shim.Column{Value: &shim.Column_String_{String_: key_accepter_code}}
+        upd_o_col5 := shim.Column{Value: &shim.Column_String_{String_: key_product_code}}
+        upd_o_col6 := shim.Column{Value: &shim.Column_Int64{Int64: value_order_amount}}
+        upd_o_col7 := shim.Column{Value: &shim.Column_String_{String_: value_order_status}}
+        upd_o_col8 := shim.Column{Value: &shim.Column_String_{String_: value_last_updated_by}}
+        upd_o_col9 := shim.Column{Value: &shim.Column_String_{String_: value_last_updated_datetime}}
+
+        o_columns = append(o_columns, &upd_o_col1)
+        o_columns = append(o_columns, &upd_o_col2)
+        o_columns = append(o_columns, &upd_o_col3)
+        o_columns = append(o_columns, &upd_o_col4)
+        o_columns = append(o_columns, &upd_o_col5)
+        o_columns = append(o_columns, &upd_o_col6)
+        o_columns = append(o_columns, &upd_o_col7)
+        o_columns = append(o_columns, &upd_o_col8)
+        o_columns = append(o_columns, &upd_o_col9)
+        new_o_row := shim.Row{Columns: o_columns}
+
+        ok2, err := stub.ReplaceRow("order", new_o_row)
+
+        if err != nil {
+                return nil, errors.New("Failed inserting row.")
+        }
+
+        if !ok2 {
+                return nil, errors.New("ReplaceRow operation failed. Row with given key does not exist")
+        }
+
+        return nil, nil
 }
 
 // Run callback representing the invocation of a chaincode
 func (t *TradeChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 
-	// Handle different functions
-	if function == "register" {
-		// åœ¨åº«ãƒã‚¹ã‚¿ã®ç™»éŒ²
-		return t.register(stub, args)
-	} else if function == "update" {
-		// åœ¨åº«ãƒã‚¹ã‚¿ã®ç¾åœ¨åº«æ•°æ›´æ–°
-		return t.update(stub, args)
-	} else if function == "order_entry" {
-		// å•†å“æ³¨æ–‡å–å¼•
-		return t.order_entry(stub, args)
-	} else if function == "allocate_entry" {
-		// åœ¨åº«å¼•å½“å–å¼•
-		return t.allocate_entry(stub, args)
-	} else if function == "shipment_entry" {
-		// å€‰åº«å‡ºè·å–å¼•
-		return t.shipment_entry(stub, args)
-	}
+        // Handle different functions
+        if function == "register" {
+                // İŒÉƒ}ƒXƒ^‚Ì“o˜^
+                return t.register(stub, args)
+        } else if function == "update" {
+                // İŒÉƒ}ƒXƒ^‚ÌŒ»İŒÉ”XV
+                return t.update(stub, args)
+        } else if function == "order_entry" {
+                // ¤•i’•¶æˆø
+                return t.order_entry(stub, args)
+        } else if function == "allocate_entry" {
+                // İŒÉˆø“–æˆø
+                return t.allocate_entry(stub, args)
+        } else if function == "shipment_entry" {
+                // ‘qŒÉo‰×æˆø
+                return t.shipment_entry(stub, args)
+        }
 
-	return nil, errors.New("Received unknown function invocation")
+        return nil, errors.New("Received unknown function invocation")
 }
 
 func main() {
-	err := shim.Start(new(TradeChaincode))
-	if err != nil {
-		fmt.Printf("Error starting TradeChaincode: %s", err)
-	}
+        err := shim.Start(new(TradeChaincode))
+        if err != nil {
+                fmt.Printf("Error starting TradeChaincode: %s", err)
+        }
 }
