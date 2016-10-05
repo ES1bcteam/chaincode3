@@ -40,7 +40,7 @@ import (
 type TradeChaincode struct {
 }
 
-// İŒÉƒ}ƒXƒ^Aæˆøƒe[ƒuƒ‹‚ğì¬‚·‚é
+// åœ¨åº«ãƒã‚¹ã‚¿ã€å–å¼•ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’ä½œæˆã™ã‚‹
 //
 func (t *TradeChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 //      myLogger.Info("[TradeChaincode] Init")
@@ -48,8 +48,8 @@ func (t *TradeChaincode) Init(stub *shim.ChaincodeStub, function string, args []
                 return nil, errors.New("Incorrect number of arguments. Expecting 0")
         }
 
-        // Create İŒÉƒ}ƒXƒ^‚ğì¬‚·‚é
-        // ƒe[ƒuƒ‹–¼Fstock
+        // Create åœ¨åº«ãƒã‚¹ã‚¿ã‚’ä½œæˆã™ã‚‹
+        // ãƒ†ãƒ¼ãƒ–ãƒ«åï¼šstock
         err_stock := stub.CreateTable("stock", []*shim.ColumnDefinition{
                 &shim.ColumnDefinition{"key_system_code", shim.ColumnDefinition_STRING, true},
                 &shim.ColumnDefinition{"key_product_code", shim.ColumnDefinition_STRING, true},
@@ -61,8 +61,8 @@ func (t *TradeChaincode) Init(stub *shim.ChaincodeStub, function string, args []
                 return nil, errors.New("Failed creating stock table.")
         }
 
-        // Create æˆøƒe[ƒuƒ‹‚ğì¬‚·‚é
-        // ƒe[ƒuƒ‹–¼Forder
+        // Create å–å¼•ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’ä½œæˆã™ã‚‹
+        // ãƒ†ãƒ¼ãƒ–ãƒ«åï¼šorder
         err_order := stub.CreateTable("order", []*shim.ColumnDefinition{
                 &shim.ColumnDefinition{"key_system_code", shim.ColumnDefinition_STRING, true},
                 &shim.ColumnDefinition{"key_UUID", shim.ColumnDefinition_STRING, true},
@@ -80,7 +80,7 @@ func (t *TradeChaincode) Init(stub *shim.ChaincodeStub, function string, args []
                 return nil, errors.New("Failed creating order table.")
         }
 
-//      myLogger.Info("ƒe[ƒuƒ‹“o˜^Š®—¹")
+//      myLogger.Info("ãƒ†ãƒ¼ãƒ–ãƒ«ç™»éŒ²å®Œäº†")
 
         // Set the role of the users that are allowed to assign assets
         // The metadata will contain the role of the users that are allowed to assign assets
@@ -101,8 +101,8 @@ func (t *TradeChaincode) Init(stub *shim.ChaincodeStub, function string, args []
 
 }
 
-//  İŒÉƒ}ƒXƒ^‚Éƒf[ƒ^‚ğ“o˜^‚·‚é
-//   ˆø”F¤•iƒR[ƒh,İŒÉ”
+//  åœ¨åº«ãƒã‚¹ã‚¿ã«ãƒ‡ãƒ¼ã‚¿ã‚’ç™»éŒ²ã™ã‚‹
+//   å¼•æ•°ï¼šå•†å“ã‚³ãƒ¼ãƒ‰,åœ¨åº«æ•°
 
 func (t *TradeChaincode) register(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
         if len(args) != 4 {
@@ -124,7 +124,7 @@ func (t *TradeChaincode) register(stub *shim.ChaincodeStub, args []string) ([]by
         }
         key_system_code := "stock_management"
 
-        // İŒÉƒ}ƒXƒ^‚ğ“o˜^‚·‚é
+        // åœ¨åº«ãƒã‚¹ã‚¿ã‚’ç™»éŒ²ã™ã‚‹
         ok, err := stub.InsertRow("stock", shim.Row{
                 Columns: []*shim.Column{
                         &shim.Column{Value: &shim.Column_String_{String_: key_system_code}},
@@ -147,8 +147,8 @@ func (t *TradeChaincode) register(stub *shim.ChaincodeStub, args []string) ([]by
 }
 
 
-//  İŒÉƒ}ƒXƒ^‚Ìƒf[ƒ^‚ğXV‚·‚é
-//   ˆø”F¤•iƒR[ƒh,İŒÉ’Ç‰Á”
+//  åœ¨åº«ãƒã‚¹ã‚¿ã®ãƒ‡ãƒ¼ã‚¿ã‚’æ›´æ–°ã™ã‚‹
+//   å¼•æ•°ï¼šå•†å“ã‚³ãƒ¼ãƒ‰,åœ¨åº«è¿½åŠ æ•°
 
 func (t *TradeChaincode) update(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
         if len(args) != 2 {
@@ -170,8 +170,8 @@ func (t *TradeChaincode) update(stub *shim.ChaincodeStub, args []string) ([]byte
         stock_columns = append(stock_columns, s_col1)
         stock_columns = append(stock_columns, s_col2)
 
-//      myLogger.Debug("s_col1‚Ì“à—e‚ğŠm”F‚·‚éB [%s] ", s_col1)
-//      myLogger.Debug("s_col2‚Ì“à—e‚ğŠm”F‚·‚éB [%s] ", s_col2)
+//      myLogger.Debug("s_col1ã®å†…å®¹ã‚’ç¢ºèªã™ã‚‹ã€‚ [%s] ", s_col1)
+//      myLogger.Debug("s_col2ã®å†…å®¹ã‚’ç¢ºèªã™ã‚‹ã€‚ [%s] ", s_col2)
 
         row, err := stub.GetRow("stock", stock_columns)
 
@@ -190,10 +190,10 @@ func (t *TradeChaincode) update(stub *shim.ChaincodeStub, args []string) ([]byte
 
 
         if current_stock == 0 {
-                return nil, fmt.Errorf("Invalid İŒÉ”. 0")
+                return nil, fmt.Errorf("Invalid åœ¨åº«æ•°. 0")
         }
 
-        // Œ»İŒÉ‚Éˆø”DİŒÉ’Ç‰Á”‚ğ‰ÁZ
+        // ç¾åœ¨åº«ã«å¼•æ•°ï¼åœ¨åº«è¿½åŠ æ•°ã‚’åŠ ç®—
         current_stock = current_stock + stock_add
 
         var columns []*shim.Column
@@ -248,12 +248,12 @@ func (t *TradeChaincode) Query(stub *shim.ChaincodeStub, function string, args [
                                 return nil, errors.New(jsonResp)
                         }
 
-                        // \‘¢‘Ì‚Ì’è‹`
+                        // æ§‹é€ ä½“ã®å®šç¾©
                         type res_stock_search struct {
-                                Key_product_code string // ¤•iƒR[ƒh
-                                Value_current_stock int64 // Œ»İŒÉ”
-                                Value_allocate_stock int64 // ˆø“–”
-                                Value_backorder_stock int64 // ”­’c”
+                                Key_product_code string // å•†å“ã‚³ãƒ¼ãƒ‰
+                                Value_current_stock int64 // ç¾åœ¨åº«æ•°
+                                Value_allocate_stock int64 // å¼•å½“æ•°
+                                Value_backorder_stock int64 // ç™ºæ³¨æ®‹æ•°
                         }
 
                         var rows []shim.Row
@@ -265,7 +265,7 @@ func (t *TradeChaincode) Query(stub *shim.ChaincodeStub, function string, args [
                                         if !ok {
                                                 rowChannel = nil
                                         } else {
-                                                // •¶š—ñŒ^‚Ìê‡.GetString_()‚ğg‚¤
+                                                // æ–‡å­—åˆ—å‹ã®å ´åˆ.GetString_()ã‚’ä½¿ã†
                                                 var myRes res_stock_search
                                                 myRes.Key_product_code      = row.Columns[1].GetString_()
                                                 myRes.Value_current_stock   = row.Columns[2].GetInt64()
@@ -282,7 +282,7 @@ func (t *TradeChaincode) Query(stub *shim.ChaincodeStub, function string, args [
                                 }
                         }
 
-                        //JSONŒ^‚É‚·‚éB
+                        //JSONå‹ã«ã™ã‚‹ã€‚
                         jsonRows, err := json.Marshal(myResponces)
                         if err != nil {
                                 return nil, fmt.Errorf("stock_search operation failed. Error marshaling JSON: %s", err)
@@ -310,16 +310,16 @@ func (t *TradeChaincode) Query(stub *shim.ChaincodeStub, function string, args [
                                 return nil, errors.New(jsonResp)
                         }
 
-                        // \‘¢‘Ì‚Ì’è‹`
+                        // æ§‹é€ ä½“ã®å®šç¾©
                         type res_order_search struct {
-                                UUID string // ”Ô†
-                                Key_orderer_code string // ’•¶Ò
-                                Key_accepter_code string // ó’Ò
-                                Key_product_code string // ¤•iƒR[ƒh
-                                Value_order_amount int64 // æˆø”
-                                Value_order_status string // æˆøó‘Ô
-                                Value_last_updated_by string // ÅIXVÒ
-                                Value_last_updated_datetime string // ÅIXV“ú
+                                UUID string // ç•ªå·
+                                Key_orderer_code string // æ³¨æ–‡è€…
+                                Key_accepter_code string // å—æ³¨è€…
+                                Key_product_code string // å•†å“ã‚³ãƒ¼ãƒ‰
+                                Value_order_amount int64 // å–å¼•æ•°
+                                Value_order_status string // å–å¼•çŠ¶æ…‹
+                                Value_last_updated_by string // æœ€çµ‚æ›´æ–°è€…
+                                Value_last_updated_datetime string // æœ€çµ‚æ›´æ–°æ—¥æ™‚
                         }
 
                         var myResponces []res_order_search
@@ -330,7 +330,7 @@ func (t *TradeChaincode) Query(stub *shim.ChaincodeStub, function string, args [
                                         if !ok {
                                                 rowChannel = nil
                                         } else {
-                                                // •¶š—ñŒ^‚Ìê‡.GetString_()‚ğg‚¤
+                                                // æ–‡å­—åˆ—å‹ã®å ´åˆ.GetString_()ã‚’ä½¿ã†
                                                 var myRes res_order_search
                                                 myRes.UUID    = row.Columns[1].GetString_()
                                                 myRes.Key_orderer_code  = row.Columns[2].GetString_()
@@ -350,7 +350,7 @@ func (t *TradeChaincode) Query(stub *shim.ChaincodeStub, function string, args [
                                 }
                         }
 
-                        //JSONŒ^‚É‚·‚éB
+                        //JSONå‹ã«ã™ã‚‹ã€‚
                         jsonRows, err := json.Marshal(myResponces)
                         if err != nil {
                                 return nil, fmt.Errorf("order_search operation failed. Error marshaling JSON: %s", err)
@@ -381,16 +381,16 @@ func (t *TradeChaincode) Query(stub *shim.ChaincodeStub, function string, args [
                                 return nil, errors.New(jsonResp)
                         }
 
-                        // \‘¢‘Ì‚Ì’è‹`
+                        // æ§‹é€ ä½“ã®å®šç¾©
                         type res_order_search struct {
-                                UUID string // ”Ô†
-                                Key_orderer_code string // ’•¶Ò
-                                Key_accepter_code string // ó’Ò
-                                Key_product_code string // ¤•iƒR[ƒh
-                                Value_order_amount int64 // æˆø”
-                                Value_order_status string // æˆøó‘Ô
-                                Value_last_updated_by string // ÅIXVÒ
-                                Value_last_updated_datetime string // ÅIXV“ú
+                                UUID string // ç•ªå·
+                                Key_orderer_code string // æ³¨æ–‡è€…
+                                Key_accepter_code string // å—æ³¨è€…
+                                Key_product_code string // å•†å“ã‚³ãƒ¼ãƒ‰
+                                Value_order_amount int64 // å–å¼•æ•°
+                                Value_order_status string // å–å¼•çŠ¶æ…‹
+                                Value_last_updated_by string // æœ€çµ‚æ›´æ–°è€…
+                                Value_last_updated_datetime string // æœ€çµ‚æ›´æ–°æ—¥æ™‚
                         }
 
                         var myResponces []res_order_search
@@ -401,7 +401,7 @@ func (t *TradeChaincode) Query(stub *shim.ChaincodeStub, function string, args [
                                         if !ok {
                                                 rowChannel = nil
                                         } else {
-                                                // •¶š—ñŒ^‚Ìê‡.GetString_()‚ğg‚¤
+                                                // æ–‡å­—åˆ—å‹ã®å ´åˆ.GetString_()ã‚’ä½¿ã†
                                                 var myRes res_order_search
                                                 myRes.UUID    = row.Columns[1].GetString_()
                                                 myRes.Key_orderer_code  = row.Columns[2].GetString_()
@@ -421,7 +421,7 @@ func (t *TradeChaincode) Query(stub *shim.ChaincodeStub, function string, args [
                                 }
                         }
 
-                        //JSONŒ^‚É‚·‚éB
+                        //JSONå‹ã«ã™ã‚‹ã€‚
                         jsonRows, err := json.Marshal(myResponces)
                         if err != nil {
                                 return nil, fmt.Errorf("order_search operation failed. Error marshaling JSON: %s", err)
@@ -437,7 +437,7 @@ func (t *TradeChaincode) Query(stub *shim.ChaincodeStub, function string, args [
 
 func (t *TradeChaincode) order_entry(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
         if len(args) != 5 {
-                return nil, errors.New("ˆø”‚Í5ŒÂw’è‚µ‚Ä‚­‚¾‚³‚¢B")
+                return nil, errors.New("å¼•æ•°ã¯5å€‹æŒ‡å®šã—ã¦ãã ã•ã„ã€‚")
         }
 
         var value_order_amount int64
@@ -448,12 +448,12 @@ func (t *TradeChaincode) order_entry(stub *shim.ChaincodeStub, args []string) ([
         key_product_code    := args[2]
         value_order_amount,err := strconv.ParseInt(args[3], 10, 64)
         if err != nil {
-                return nil, errors.New("æˆø”‚Í”š‚ğw’è‚µ‚Ä‚­‚¾‚³‚¢B")
+                return nil, errors.New("å–å¼•æ•°ã¯æ•°å­—ã‚’æŒ‡å®šã—ã¦ãã ã•ã„ã€‚")
         }
         value_last_updated_by   := args[4]
         value_order_status = "ACCEPTED"
         if (value_order_amount < 1) {
-                return nil, fmt.Errorf("æˆø”‚Í1ˆÈã‚ğw’è‚µ‚Ä‚­‚¾‚³‚¢Bæˆø” [%d] ", value_order_amount )
+                return nil, fmt.Errorf("å–å¼•æ•°ã¯1ä»¥ä¸Šã‚’æŒ‡å®šã—ã¦ãã ã•ã„ã€‚å–å¼•æ•° [%d] ", value_order_amount )
         }
 
         // Recover the role that is allowed to make assignments
@@ -477,9 +477,9 @@ func (t *TradeChaincode) order_entry(stub *shim.ChaincodeStub, args []string) ([
                 return nil, fmt.Errorf("The caller does not have the rights to invoke assign. Expected role [%v], caller role [%v]", assigner, caller)
         }
 
-        // æˆø—š—ğ‚ğ“o˜^‚·‚éB
+        // å–å¼•å±¥æ­´ã‚’ç™»éŒ²ã™ã‚‹ã€‚
 
-        // Value‚Ì“à—e‚ğJSONŒ`®‚Å“o˜^‚·‚é
+        // Valueã®å†…å®¹ã‚’JSONå½¢å¼ã§ç™»éŒ²ã™ã‚‹
         const layout2 = "2006-01-02 15:04:05"
         value_last_updated_datetime = time.Now().Format(layout2)
 
@@ -521,7 +521,7 @@ func (t *TradeChaincode) order_entry(stub *shim.ChaincodeStub, args []string) ([
 func (t *TradeChaincode) allocate_entry(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 
         if len(args) != 2 {
-                return nil, errors.New("ˆø”‚Í2ŒÂw’è‚µ‚Ä‚­‚¾‚³‚¢B")
+                return nil, errors.New("å¼•æ•°ã¯2å€‹æŒ‡å®šã—ã¦ãã ã•ã„ã€‚")
         }
 
         var value_order_amount, value_current_stock, value_allocate_stock int64
@@ -538,7 +538,7 @@ func (t *TradeChaincode) allocate_entry(stub *shim.ChaincodeStub, args []string)
 
         rowChannel, err := stub.GetRows("order", order_columns)
         if err != nil {
-                return nil, errors.New("GetRow‚ÅƒGƒ‰[")
+                return nil, errors.New("GetRowã§ã‚¨ãƒ©ãƒ¼")
         }
 
         for {
@@ -560,11 +560,11 @@ func (t *TradeChaincode) allocate_entry(stub *shim.ChaincodeStub, args []string)
         }
 
 //      if key_product_code == nil {
-//              return nil, errors.New("¤•iƒR[ƒh‚ªæ“¾‚Å‚«‚Ü‚¹‚ñ")
+//              return nil, errors.New("å•†å“ã‚³ãƒ¼ãƒ‰ãŒå–å¾—ã§ãã¾ã›ã‚“")
 //      } else if value_order_amount == nil {
-//              return nil, errors.New("æˆø”‚ªæ“¾‚Å‚«‚Ü‚¹‚ñ")
+//              return nil, errors.New("å–å¼•æ•°ãŒå–å¾—ã§ãã¾ã›ã‚“")
 //      } else if value_order_status != "ACCEPTED" {
-//              return nil, errors.New("æˆøó‘Ô‚ªACCEPTED‚Å‚Í‚ ‚è‚Ü‚¹‚ñ")
+//              return nil, errors.New("å–å¼•çŠ¶æ…‹ãŒACCEPTEDã§ã¯ã‚ã‚Šã¾ã›ã‚“")
 //      }
 
         var stock_columns []shim.Column
@@ -576,22 +576,22 @@ func (t *TradeChaincode) allocate_entry(stub *shim.ChaincodeStub, args []string)
         s_row, err := stub.GetRow("stock", stock_columns)
 
         if err != nil {
-                return nil, errors.New("ŠY“–‚Ì¤•iƒR[ƒh‚ªİŒÉƒ}ƒXƒ^‚É‚ ‚è‚Ü‚¹‚ñ")
+                return nil, errors.New("è©²å½“ã®å•†å“ã‚³ãƒ¼ãƒ‰ãŒåœ¨åº«ãƒã‚¹ã‚¿ã«ã‚ã‚Šã¾ã›ã‚“")
         }
         value_current_stock = s_row.Columns[2].GetInt64()
         value_allocate_stock = s_row.Columns[3].GetInt64()
 //      if value_current_stock == nil {
-//              return nil, errors.New("Œ»İŒÉ”‚ªæ“¾‚Å‚«‚Ü‚¹‚ñ")
+//              return nil, errors.New("ç¾åœ¨åº«æ•°ãŒå–å¾—ã§ãã¾ã›ã‚“")
 //      } else if value_allocate_stock = nil {
-//              return nil, errors.New("ˆø“–”‚ªæ“¾‚Å‚«‚Ü‚¹‚ñ")
+//              return nil, errors.New("å¼•å½“æ•°ãŒå–å¾—ã§ãã¾ã›ã‚“")
 //      }
 
-        //Œ»İŒÉ” | ˆø“–” „ æˆø” ‚Ìƒ`ƒFƒbƒN
+        //ç¾åœ¨åº«æ•° ï¼ å¼•å½“æ•° ï¼ å–å¼•æ•° ã®ãƒã‚§ãƒƒã‚¯
         if value_current_stock - value_allocate_stock < value_order_amount {
-                return nil, errors.New("Œ»İŒÉ”‚ª‘«‚è‚Ü‚¹‚ñ")
+                return nil, errors.New("ç¾åœ¨åº«æ•°ãŒè¶³ã‚Šã¾ã›ã‚“")
         }
 
-        // İŒÉƒ}ƒXƒ^XV
+        // åœ¨åº«ãƒã‚¹ã‚¿æ›´æ–°
         value_allocate_stock = value_allocate_stock + value_order_amount
 
         var s_columns []*shim.Column
@@ -618,9 +618,9 @@ func (t *TradeChaincode) allocate_entry(stub *shim.ChaincodeStub, args []string)
                 return nil, errors.New("ReplaceRow operation failed. Row with given key does not exist")
         }
 
-//      myLogger.Info("İŒÉˆø“–Š®—¹")
+//      myLogger.Info("åœ¨åº«å¼•å½“å®Œäº†")
 
-        // æˆøƒf[ƒ^XV
+        // å–å¼•ãƒ‡ãƒ¼ã‚¿æ›´æ–°
         value_order_status = "ALLOCATED"
         const layout2 = "2006-01-02 15:04:05"
         value_last_updated_datetime = time.Now().Format(layout2)
@@ -663,7 +663,7 @@ func (t *TradeChaincode) allocate_entry(stub *shim.ChaincodeStub, args []string)
 func (t *TradeChaincode) shipment_entry(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 
         if len(args) != 2 {
-                return nil, errors.New("ˆø”‚Í2ŒÂw’è‚µ‚Ä‚­‚¾‚³‚¢B")
+                return nil, errors.New("å¼•æ•°ã¯2å€‹æŒ‡å®šã—ã¦ãã ã•ã„ã€‚")
         }
 
         var value_order_amount, value_current_stock, value_allocate_stock int64
@@ -680,7 +680,7 @@ func (t *TradeChaincode) shipment_entry(stub *shim.ChaincodeStub, args []string)
 
         rowChannel, err := stub.GetRows("order", order_columns)
         if err != nil {
-                return nil, errors.New("GetRow‚ÅƒGƒ‰[")
+                return nil, errors.New("GetRowã§ã‚¨ãƒ©ãƒ¼")
         }
 
         for {
@@ -710,17 +710,17 @@ func (t *TradeChaincode) shipment_entry(stub *shim.ChaincodeStub, args []string)
         s_row, err := stub.GetRow("stock", stock_columns)
 
         if err != nil {
-                return nil, errors.New("ŠY“–‚Ì¤•iƒR[ƒh‚ªİŒÉƒ}ƒXƒ^‚É‚ ‚è‚Ü‚¹‚ñ")
+                return nil, errors.New("è©²å½“ã®å•†å“ã‚³ãƒ¼ãƒ‰ãŒåœ¨åº«ãƒã‚¹ã‚¿ã«ã‚ã‚Šã¾ã›ã‚“")
         }
         value_current_stock = s_row.Columns[2].GetInt64()
         value_allocate_stock = s_row.Columns[3].GetInt64()
 
-        //Œ»İŒÉ” „ æˆø” ‚Ìƒ`ƒFƒbƒN
+        //ç¾åœ¨åº«æ•° ï¼ å–å¼•æ•° ã®ãƒã‚§ãƒƒã‚¯
         if value_current_stock < value_order_amount {
-                return nil, errors.New("Œ»İŒÉ”‚ª‘«‚è‚Ü‚¹‚ñ")
+                return nil, errors.New("ç¾åœ¨åº«æ•°ãŒè¶³ã‚Šã¾ã›ã‚“")
         }
 
-        // İŒÉƒ}ƒXƒ^XV
+        // åœ¨åº«ãƒã‚¹ã‚¿æ›´æ–°
         value_current_stock = value_current_stock - value_order_amount
         value_allocate_stock = value_allocate_stock - value_order_amount
 
@@ -748,9 +748,9 @@ func (t *TradeChaincode) shipment_entry(stub *shim.ChaincodeStub, args []string)
                 return nil, errors.New("ReplaceRow operation failed. Row with given key does not exist")
         }
 
-//      myLogger.Info("o‰×Š®—¹")
+//      myLogger.Info("å‡ºè·å®Œäº†")
 
-        // æˆøƒf[ƒ^XV
+        // å–å¼•ãƒ‡ãƒ¼ã‚¿æ›´æ–°
         value_order_status = "SHIPPED"
         const layout2 = "2006-01-02 15:04:05"
         value_last_updated_datetime = time.Now().Format(layout2)
@@ -795,19 +795,19 @@ func (t *TradeChaincode) Invoke(stub *shim.ChaincodeStub, function string, args 
 
         // Handle different functions
         if function == "register" {
-                // İŒÉƒ}ƒXƒ^‚Ì“o˜^
+                // åœ¨åº«ãƒã‚¹ã‚¿ã®ç™»éŒ²
                 return t.register(stub, args)
         } else if function == "update" {
-                // İŒÉƒ}ƒXƒ^‚ÌŒ»İŒÉ”XV
+                // åœ¨åº«ãƒã‚¹ã‚¿ã®ç¾åœ¨åº«æ•°æ›´æ–°
                 return t.update(stub, args)
         } else if function == "order_entry" {
-                // ¤•i’•¶æˆø
+                // å•†å“æ³¨æ–‡å–å¼•
                 return t.order_entry(stub, args)
         } else if function == "allocate_entry" {
-                // İŒÉˆø“–æˆø
+                // åœ¨åº«å¼•å½“å–å¼•
                 return t.allocate_entry(stub, args)
         } else if function == "shipment_entry" {
-                // ‘qŒÉo‰×æˆø
+                // å€‰åº«å‡ºè·å–å¼•
                 return t.shipment_entry(stub, args)
         }
 
