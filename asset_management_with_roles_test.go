@@ -35,7 +35,7 @@ import (
         "github.com/hyperledger/fabric/core/ledger"
         "github.com/hyperledger/fabric/membersrvc/ca"
         pb "github.com/hyperledger/fabric/protos"
-        "github.com/op/go-logging"
+//        "github.com/op/go-logging"
         "github.com/spf13/viper"
         "golang.org/x/net/context"
         "google.golang.org/grpc"
