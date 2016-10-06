@@ -439,21 +439,21 @@ func initVP() {
                 var err error
 
                 if viper.GetBool("peer.validator.enabled") {
-                        testLogger.Debugf("Registering validator with enroll ID: %s", enrollID)
+//                        testLogger.Debugf("Registering validator with enroll ID: %s", enrollID)
                         if err = crypto.RegisterValidator(enrollID, nil, enrollID, enrollSecret); nil != err {
                                 panic(err)
                         }
-                        testLogger.Debugf("Initializing validator with enroll ID: %s", enrollID)
+//                        testLogger.Debugf("Initializing validator with enroll ID: %s", enrollID)
                         secHelper, err = crypto.InitValidator(enrollID, nil)
                         if nil != err {
                                 panic(err)
                         }
                 } else {
-                        testLogger.Debugf("Registering non-validator with enroll ID: %s", enrollID)
+//                        testLogger.Debugf("Registering non-validator with enroll ID: %s", enrollID)
                         if err = crypto.RegisterPeer(enrollID, nil, enrollID, enrollSecret); nil != err {
                                 panic(err)
                         }
-                        testLogger.Debugf("Initializing non-validator with enroll ID: %s", enrollID)
+//                        testLogger.Debugf("Initializing non-validator with enroll ID: %s", enrollID)
                         secHelper, err = crypto.InitPeer(enrollID, nil)
                         if nil != err {
                                 panic(err)
