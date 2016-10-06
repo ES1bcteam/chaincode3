@@ -43,7 +43,7 @@ tca:
 # Default attributes for Attribute Certificate Authority
 aca:
     attributes:
-        attribute-entry-0: admin;bank_a;role;issuer;2015-01-01T00:00:00-03:00;;
+        attribute-entry-0: assigner;bank_a;role;issuer;2015-01-01T00:00:00-03:00;;
         attribute-entry-1: alice;bank_a;role;client;2016-01-01T00:00:00-03:00;;
         attribute-entry-2: alice;bank_a;account1;22222-00001;2016-01-01T00:00:00-03:00;;
         attribute-entry-3: alice;bank_a;account2;22222-00002;2016-01-01T00:00:00-03:00;;
