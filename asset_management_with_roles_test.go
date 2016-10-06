@@ -50,7 +50,7 @@ const (
 )
 
 var (
-        testLogger = logging.MustGetLogger("test")
+//        testLogger = logging.MustGetLogger("test")
 
         lis net.Listener
 
@@ -346,14 +346,14 @@ func setup() {
         }
 
         // Logging
-        var formatter = logging.MustStringFormatter(
+//        var formatter = logging.MustStringFormatter(
                 `%{color}[%{module}] %{shortfunc} [%{shortfile}] -> %{level:.4s} %{id:03x}%{color:reset} %{message}`,
         )
-        logging.SetFormatter(formatter)
+//        logging.SetFormatter(formatter)
 
-        logging.SetLevel(logging.DEBUG, "peer")
-        logging.SetLevel(logging.DEBUG, "chaincode")
-        logging.SetLevel(logging.DEBUG, "cryptochain")
+//        logging.SetLevel(logging.DEBUG, "peer")
+//        logging.SetLevel(logging.DEBUG, "chaincode")
+//        logging.SetLevel(logging.DEBUG, "cryptochain")
 
         // Init the crypto layer
         if err := crypto.Init(); err != nil {

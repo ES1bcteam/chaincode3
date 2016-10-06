@@ -27,7 +27,7 @@ import (
 //        "github.com/op/go-logging"
 )
 
-var myLogger = logging.MustGetLogger("asset_mgm")
+//var myLogger = logging.MustGetLogger("asset_mgm")
 
 // AssetManagementChaincode example simple Asset Management Chaincode implementation
 // with access control enforcement at chaincode level.
