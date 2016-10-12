@@ -47,6 +47,20 @@ func (t *TradeChaincode) Init(stub *shim.ChaincodeStub, function string, args []
         if len(args) != 0 {
                 return nil, errors.New("Incorrect number of arguments. Expecting 0")
         }
+        
+        callerFunction, err := stub.ReadCertAttribute("function")
+        if err != nil {
+                fmt.Printf("Error reading attribute [%v] \n", err)
+                return nil, fmt.Errorf("Failed fetching caller function. Error was [%v]", err)
+        }
+        
+        caller := string(callerFunction[:])
+        assigner = "init"
+
+        if caller != assigner {
+                fmt.Printf("Caller is not assigner - caller %v assigner %v\n", caller, assigner)
+                return nil, fmt.Errorf("The caller does not have the rights to invoke assign. Expected role [%v], caller role [%v]", assigner, caller)
+        }
 
         // Create 在庫マスタを作成する
         // テーブル名：stock
