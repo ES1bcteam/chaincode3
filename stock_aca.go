@@ -457,7 +457,7 @@ func (t *TradeChaincode) order_entry(stub *shim.ChaincodeStub, args []string) ([
         }
 
         // Recover the role that is allowed to make assignments
-        assignerRole, err := stub.GetState("assignerRole")
+//        assignerRole, err := stub.GetState("assignerRole")
         if err != nil {
                 fmt.Printf("Error getting role [%v] \n", err)
                 return nil, errors.New("Failed fetching assigner role")
