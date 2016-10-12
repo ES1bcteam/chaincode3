@@ -441,7 +441,7 @@ func (t *TradeChaincode) order_entry(stub *shim.ChaincodeStub, args []string) ([
         }
 
         var value_order_amount int64
-        var value_order_status, value_last_updated_datetime string
+        var value_order_status, value_last_updated_datetime, assigner string
 
         key_orderer_code        := args[0]
         key_accepter_code       := args[1]
