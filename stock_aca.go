@@ -44,6 +44,9 @@ type TradeChaincode struct {
 //
 func (t *TradeChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 //      myLogger.Info("[TradeChaincode] Init")
+
+        var assigner string
+
         if len(args) != 0 {
                 return nil, errors.New("Incorrect number of arguments. Expecting 0")
         }
