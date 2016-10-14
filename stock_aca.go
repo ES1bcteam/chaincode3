@@ -518,8 +518,8 @@ func (t *TradeChaincode) order_entry(stub *shim.ChaincodeStub, args []string) ([
                 return nil, errors.New("引数は5個指定してください。")
         }
                 
-        callerRole, err := stub.ReadCertAttribute("role")
-        if err != nil {
+        callerRole, role_err := stub.ReadCertAttribute("role")
+        if role_err != nil {
                 fmt.Printf("Error reading attribute [%v] \n", err)
                 return nil, fmt.Errorf("Failed fetching caller role. Error was [%v]", err)
         }
