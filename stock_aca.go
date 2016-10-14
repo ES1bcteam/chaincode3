@@ -187,6 +187,8 @@ func (t *TradeChaincode) update(stub *shim.ChaincodeStub, args []string) ([]byte
         if len(args) != 2 {
                 return nil, errors.New("Incorrect number of arguments. Expecting 2")
         }
+        
+        var assigner string
 
         var stock_add, current_stock, allocate_stock, backorder_stock int64
         var product_code string
@@ -348,8 +350,8 @@ func (t *TradeChaincode) Query(stub *shim.ChaincodeStub, function string, args [
                                 return jsonRows, nil
                                
                         } else {
-                                fmt.Printf("Caller is not assigner - caller %v assigner %v\n", caller, assigner)
-                                return nil, fmt.Errorf("The caller does not have the rights to invoke assign. Expected role [%v], caller role [%v]", assigner, caller)
+                                fmt.Printf("Caller is not assigner - caller %v", caller)
+                                return nil, fmt.Errorf("The caller does not have the rights to invoke assign. Expected caller role [%v]", caller)
                         }
 
                 case "order_search":
@@ -526,8 +528,8 @@ func (t *TradeChaincode) order_entry(stub *shim.ChaincodeStub, args []string) ([
         
         caller := string(callerRole[:])
         if caller != "admin" && caller != "orderer" {
-                fmt.Printf("Caller is not assigner - caller %v assigner %v\n", caller, assigner)
-                return nil, fmt.Errorf("The caller does not have the rights to invoke assign. Expected role [%v], caller role [%v]", assigner, caller)
+                fmt.Printf("Caller is not assigner - caller %v", caller)
+                return nil, fmt.Errorf("The caller does not have the rights to invoke assign. Expected caller role [%v]", caller)
         }
 
         var value_order_amount int64
