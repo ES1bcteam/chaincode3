@@ -432,8 +432,8 @@ func (t *TradeChaincode) Query(stub *shim.ChaincodeStub, function string, args [
                                 return jsonRows, nil
 
                         } else {
-                                fmt.Printf("Caller is not assigner - caller %v assigner %v\n", caller, assigner)
-                                return nil, fmt.Errorf("The caller does not have the rights to invoke assign. Expected role [%v], caller role [%v]", assigner, caller)
+                                fmt.Printf("Caller is not assigner - caller %v", caller)
+                                return nil, fmt.Errorf("The caller does not have the rights to invoke assign. Expected caller role [%v]",caller)
                         }
 
                 case "order_row_search":
@@ -517,9 +517,7 @@ func (t *TradeChaincode) order_entry(stub *shim.ChaincodeStub, args []string) ([
         if len(args) != 5 {
                 return nil, errors.New("引数は5個指定してください。")
         }
-        
-        var assigner string
-        
+                
         callerRole, err := stub.ReadCertAttribute("role")
         if err != nil {
                 fmt.Printf("Error reading attribute [%v] \n", err)
@@ -533,7 +531,7 @@ func (t *TradeChaincode) order_entry(stub *shim.ChaincodeStub, args []string) ([
         }
 
         var value_order_amount int64
-        var value_order_status, value_last_updated_datetime, assigner string
+        var value_order_status, value_last_updated_datetime string
 
         key_orderer_code        := args[0]
         key_accepter_code       := args[1]
@@ -546,28 +544,6 @@ func (t *TradeChaincode) order_entry(stub *shim.ChaincodeStub, args []string) ([
         value_order_status = "ACCEPTED"
         if (value_order_amount < 1) {
                 return nil, fmt.Errorf("取引数は1以上を指定してください。取引数 [%d] ", value_order_amount )
-        }
-
-        // Recover the role that is allowed to make assignments
-//        assignerRole, err := stub.GetState("assignerRole")
-        if err != nil {
-                fmt.Printf("Error getting role [%v] \n", err)
-                return nil, errors.New("Failed fetching assigner role")
-        }
-
-        callerRole, err := stub.ReadCertAttribute("role")
-        if err != nil {
-                fmt.Printf("Error reading attribute [%v] \n", err)
-                return nil, fmt.Errorf("Failed fetching caller role. Error was [%v]", err)
-        }
-
-        caller := string(callerRole[:])
-//        assigner := string(assignerRole[:])
-        assigner = "order_entry"
-
-        if caller != assigner {
-                fmt.Printf("Caller is not assigner - caller %v assigner %v\n", caller, assigner)
-                return nil, fmt.Errorf("The caller does not have the rights to invoke assign. Expected role [%v], caller role [%v]", assigner, caller)
         }
 
         // 取引履歴を登録する。
