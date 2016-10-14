@@ -51,14 +51,14 @@ func (t *TradeChaincode) Init(stub *shim.ChaincodeStub, function string, args []
                 return nil, errors.New("Incorrect number of arguments. Expecting 0")
         }
         
-        callerFunction, err := stub.ReadCertAttribute("function")
+        callerRole, err := stub.ReadCertAttribute("role")
         if err != nil {
                 fmt.Printf("Error reading attribute [%v] \n", err)
-                return nil, fmt.Errorf("Failed fetching caller function. Error was [%v]", err)
+                return nil, fmt.Errorf("Failed fetching caller role. Error was [%v]", err)
         }
         
-        caller := string(callerFunction[:])
-        assigner = "init"
+        caller := string(callerRole[:])
+        assigner = "admin"
 
         if caller != assigner {
                 fmt.Printf("Caller is not assigner - caller %v assigner %v\n", caller, assigner)
@@ -141,6 +141,22 @@ func (t *TradeChaincode) register(stub *shim.ChaincodeStub, args []string) ([]by
         }
         key_system_code := "stock_management"
 
+        var assigner string
+        
+        callerRole, err := stub.ReadCertAttribute("role")
+        if err != nil {
+                fmt.Printf("Error reading attribute [%v] \n", err)
+                return nil, fmt.Errorf("Failed fetching caller role. Error was [%v]", err)
+        }
+        
+        caller := string(callerRole[:])
+        assigner = "admin"
+
+        if caller != assigner {
+                fmt.Printf("Caller is not assigner - caller %v assigner %v\n", caller, assigner)
+                return nil, fmt.Errorf("The caller does not have the rights to invoke assign. Expected role [%v], caller role [%v]", assigner, caller)
+        }
+
         // 在庫マスタを登録する
         ok, err := stub.InsertRow("stock", shim.Row{
                 Columns: []*shim.Column{
@@ -179,6 +195,21 @@ func (t *TradeChaincode) update(stub *shim.ChaincodeStub, args []string) ([]byte
         if err != nil {
                 return nil, errors.New("Expecting integer value for asset holding")
         }
+        
+        callerRole, err := stub.ReadCertAttribute("role")
+        if err != nil {
+                fmt.Printf("Error reading attribute [%v] \n", err)
+                return nil, fmt.Errorf("Failed fetching caller role. Error was [%v]", err)
+        }
+        
+        caller := string(callerRole[:])
+        assigner = "admin"
+
+        if caller != assigner {
+                fmt.Printf("Caller is not assigner - caller %v assigner %v\n", caller, assigner)
+                return nil, fmt.Errorf("The caller does not have the rights to invoke assign. Expected role [%v], caller role [%v]", assigner, caller)
+        }
+        
         key_system_code := "stock_management"
 
         var stock_columns []shim.Column
@@ -255,57 +286,71 @@ func (t *TradeChaincode) Query(stub *shim.ChaincodeStub, function string, args [
 
                         search_key := args[0]
 
-                        var columns []shim.Column
-                        col1 := shim.Column{Value: &shim.Column_String_{String_: search_key}}
-                        columns = append(columns, col1)
-
-                        rowChannel, err := stub.GetRows("stock", columns)
+                        callerRole, err := stub.ReadCertAttribute("role")
                         if err != nil {
-                                jsonResp := "{\"Error\":\"Failed retrieveing search_key " + search_key + ". Error " + err.Error() + ". \"}"
-                                return nil, errors.New(jsonResp)
+                                fmt.Printf("Error reading attribute [%v] \n", err)
+                                return nil, fmt.Errorf("Failed fetching caller role. Error was [%v]", err)
                         }
 
-                        // 構造体の定義
-                        type res_stock_search struct {
-                                Key_product_code string // 商品コード
-                                Value_current_stock int64 // 現在庫数
-                                Value_allocate_stock int64 // 引当数
-                                Value_backorder_stock int64 // 発注残数
-                        }
+                        caller := string(callerRole[:])
+                        if caller == "admin" || caller == "trading_company" || caller == "warehouse" {
 
-                        var rows []shim.Row
-                        var myResponces []res_stock_search
+                                var columns []shim.Column
+                                col1 := shim.Column{Value: &shim.Column_String_{String_: search_key}}
+                                columns = append(columns, col1)
 
-                        for {
-                                select {
-                                case row, ok := <-rowChannel:
-                                        if !ok {
-                                                rowChannel = nil
-                                        } else {
-                                                // 文字列型の場合.GetString_()を使う
-                                                var myRes res_stock_search
-                                                myRes.Key_product_code      = row.Columns[1].GetString_()
-                                                myRes.Value_current_stock   = row.Columns[2].GetInt64()
-                                                myRes.Value_allocate_stock  = row.Columns[3].GetInt64()
-                                                myRes.Value_backorder_stock = row.Columns[4].GetInt64()
+                                rowChannel, err := stub.GetRows("stock", columns)
+                                if err != nil {
+                                        jsonResp := "{\"Error\":\"Failed retrieveing search_key " + search_key + ". Error " + err.Error() + ". \"}"
+                                        return nil, errors.New(jsonResp)
+                                }
 
-                                                myResponces = append(myResponces, myRes)
+                                // 構造体の定義
+                                type res_stock_search struct {
+                                        Key_product_code string // 商品コード
+                                        Value_current_stock int64 // 現在庫数
+                                        Value_allocate_stock int64 // 引当数
+                                        Value_backorder_stock int64 // 発注残数
+                                }
 
-                                                rows = append(rows, row)
+                                var rows []shim.Row
+                                var myResponces []res_stock_search
+
+                                for {
+                                        select {
+                                        case row, ok := <-rowChannel:
+                                                if !ok {
+                                                        rowChannel = nil
+                                                } else {
+                                                        // 文字列型の場合.GetString_()を使う
+                                                        var myRes res_stock_search
+                                                        myRes.Key_product_code      = row.Columns[1].GetString_()
+                                                        myRes.Value_current_stock   = row.Columns[2].GetInt64()
+                                                        myRes.Value_allocate_stock  = row.Columns[3].GetInt64()
+                                                        myRes.Value_backorder_stock = row.Columns[4].GetInt64()
+
+                                                        myResponces = append(myResponces, myRes)
+
+                                                        rows = append(rows, row)
+                                                }
+                                        }
+                                        if rowChannel == nil {
+                                                break
                                         }
                                 }
-                                if rowChannel == nil {
-                                        break
+
+                                //JSON型にする。
+                                jsonRows, err := json.Marshal(myResponces)
+                                if err != nil {
+                                        return nil, fmt.Errorf("stock_search operation failed. Error marshaling JSON: %s", err)
                                 }
-                        }
 
-                        //JSON型にする。
-                        jsonRows, err := json.Marshal(myResponces)
-                        if err != nil {
-                                return nil, fmt.Errorf("stock_search operation failed. Error marshaling JSON: %s", err)
+                                return jsonRows, nil
+                               
+                        } else {
+                                fmt.Printf("Caller is not assigner - caller %v assigner %v\n", caller, assigner)
+                                return nil, fmt.Errorf("The caller does not have the rights to invoke assign. Expected role [%v], caller role [%v]", assigner, caller)
                         }
-
-                        return jsonRows, nil
 
                 case "order_search":
 
@@ -317,63 +362,77 @@ func (t *TradeChaincode) Query(stub *shim.ChaincodeStub, function string, args [
 
                         search_key := args[0]
 
-                        var columns []shim.Column
-                        col1 := shim.Column{Value: &shim.Column_String_{String_: search_key}}
-                        columns = append(columns, col1)
-
-                        rowChannel, err := stub.GetRows("order", columns)
+                        callerRole, err := stub.ReadCertAttribute("role")
                         if err != nil {
-                                jsonResp := "{\"Error\":\"Failed retrieveing search_key " + search_key + ". Error " + err.Error() + ". \"}"
-                                return nil, errors.New(jsonResp)
+                                fmt.Printf("Error reading attribute [%v] \n", err)
+                                return nil, fmt.Errorf("Failed fetching caller role. Error was [%v]", err)
                         }
 
-                        // 構造体の定義
-                        type res_order_search struct {
-                                UUID string // 番号
-                                Key_orderer_code string // 注文者
-                                Key_accepter_code string // 受注者
-                                Key_product_code string // 商品コード
-                                Value_order_amount int64 // 取引数
-                                Value_order_status string // 取引状態
-                                Value_last_updated_by string // 最終更新者
-                                Value_last_updated_datetime string // 最終更新日時
-                        }
+                        caller := string(callerRole[:])
+                        if caller == "admin" || caller == "trading_company" || caller == "orderer" {
 
-                        var myResponces []res_order_search
+                                var columns []shim.Column
+                                col1 := shim.Column{Value: &shim.Column_String_{String_: search_key}}
+                                columns = append(columns, col1)
 
-                        for {
-                                select {
-                                case row, ok := <-rowChannel:
-                                        if !ok {
-                                                rowChannel = nil
-                                        } else {
-                                                // 文字列型の場合.GetString_()を使う
-                                                var myRes res_order_search
-                                                myRes.UUID    = row.Columns[1].GetString_()
-                                                myRes.Key_orderer_code  = row.Columns[2].GetString_()
-                                                myRes.Key_accepter_code = row.Columns[3].GetString_()
-                                                myRes.Key_product_code = row.Columns[4].GetString_()
-                                                myRes.Value_order_amount = row.Columns[5].GetInt64()
-                                                myRes.Value_order_status = row.Columns[6].GetString_()
-                                                myRes.Value_last_updated_by = row.Columns[7].GetString_()
-                                                myRes.Value_last_updated_datetime = row.Columns[8].GetString_()
+                                rowChannel, err := stub.GetRows("order", columns)
+                                if err != nil {
+                                        jsonResp := "{\"Error\":\"Failed retrieveing search_key " + search_key + ". Error " + err.Error() + ". \"}"
+                                        return nil, errors.New(jsonResp)
+                                }
 
-                                                myResponces = append(myResponces, myRes)
+                                // 構造体の定義
+                                type res_order_search struct {
+                                        UUID string // 番号
+                                        Key_orderer_code string // 注文者
+                                        Key_accepter_code string // 受注者
+                                        Key_product_code string // 商品コード
+                                        Value_order_amount int64 // 取引数
+                                        Value_order_status string // 取引状態
+                                        Value_last_updated_by string // 最終更新者
+                                        Value_last_updated_datetime string // 最終更新日時
+                                }
 
+                                var myResponces []res_order_search
+
+                                for {
+                                        select {
+                                        case row, ok := <-rowChannel:
+                                                if !ok {
+                                                        rowChannel = nil
+                                                } else {
+                                                        // 文字列型の場合.GetString_()を使う
+                                                        var myRes res_order_search
+                                                        myRes.UUID    = row.Columns[1].GetString_()
+                                                        myRes.Key_orderer_code  = row.Columns[2].GetString_()
+                                                        myRes.Key_accepter_code = row.Columns[3].GetString_()
+                                                        myRes.Key_product_code = row.Columns[4].GetString_()
+                                                        myRes.Value_order_amount = row.Columns[5].GetInt64()
+                                                        myRes.Value_order_status = row.Columns[6].GetString_()
+                                                        myRes.Value_last_updated_by = row.Columns[7].GetString_()
+                                                        myRes.Value_last_updated_datetime = row.Columns[8].GetString_()
+
+                                                        myResponces = append(myResponces, myRes)
+
+                                                }
+                                        }
+                                        if rowChannel == nil {
+                                                break
                                         }
                                 }
-                                if rowChannel == nil {
-                                        break
+
+                                //JSON型にする。
+                                jsonRows, err := json.Marshal(myResponces)
+                                if err != nil {
+                                        return nil, fmt.Errorf("order_search operation failed. Error marshaling JSON: %s", err)
                                 }
-                        }
 
-                        //JSON型にする。
-                        jsonRows, err := json.Marshal(myResponces)
-                        if err != nil {
-                                return nil, fmt.Errorf("order_search operation failed. Error marshaling JSON: %s", err)
-                        }
+                                return jsonRows, nil
 
-                        return jsonRows, nil
+                        } else {
+                                fmt.Printf("Caller is not assigner - caller %v assigner %v\n", caller, assigner)
+                                return nil, fmt.Errorf("The caller does not have the rights to invoke assign. Expected role [%v], caller role [%v]", assigner, caller)
+                        }
 
                 case "order_row_search":
 
@@ -455,6 +514,20 @@ func (t *TradeChaincode) Query(stub *shim.ChaincodeStub, function string, args [
 func (t *TradeChaincode) order_entry(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
         if len(args) != 5 {
                 return nil, errors.New("引数は5個指定してください。")
+        }
+        
+        var assigner string
+        
+        callerRole, err := stub.ReadCertAttribute("role")
+        if err != nil {
+                fmt.Printf("Error reading attribute [%v] \n", err)
+                return nil, fmt.Errorf("Failed fetching caller role. Error was [%v]", err)
+        }
+        
+        caller := string(callerRole[:])
+        if caller != "admin" && caller != "orderer" {
+                fmt.Printf("Caller is not assigner - caller %v assigner %v\n", caller, assigner)
+                return nil, fmt.Errorf("The caller does not have the rights to invoke assign. Expected role [%v], caller role [%v]", assigner, caller)
         }
 
         var value_order_amount int64
@@ -540,6 +613,20 @@ func (t *TradeChaincode) allocate_entry(stub *shim.ChaincodeStub, args []string)
 
         if len(args) != 2 {
                 return nil, errors.New("引数は2個指定してください。")
+        }
+        
+        var assigner string
+        
+        callerRole, err := stub.ReadCertAttribute("role")
+        if err != nil {
+                fmt.Printf("Error reading attribute [%v] \n", err)
+                return nil, fmt.Errorf("Failed fetching caller role. Error was [%v]", err)
+        }
+        
+        caller := string(callerRole[:])
+        if caller != "admin" && caller != "trading_company" {
+                fmt.Printf("Caller is not assigner - caller %v assigner %v\n", caller, assigner)
+                return nil, fmt.Errorf("The caller does not have the rights to invoke assign. Expected role [%v], caller role [%v]", assigner, caller)
         }
 
         var value_order_amount, value_current_stock, value_allocate_stock int64
@@ -682,6 +769,20 @@ func (t *TradeChaincode) shipment_entry(stub *shim.ChaincodeStub, args []string)
 
         if len(args) != 2 {
                 return nil, errors.New("引数は2個指定してください。")
+        }
+        
+        var assigner string
+        
+        callerRole, err := stub.ReadCertAttribute("role")
+        if err != nil {
+                fmt.Printf("Error reading attribute [%v] \n", err)
+                return nil, fmt.Errorf("Failed fetching caller role. Error was [%v]", err)
+        }
+        
+        caller := string(callerRole[:])
+        if caller != "admin" && caller != "warehouse" {
+                fmt.Printf("Caller is not assigner - caller %v assigner %v\n", caller, assigner)
+                return nil, fmt.Errorf("The caller does not have the rights to invoke assign. Expected role [%v], caller role [%v]", assigner, caller)
         }
 
         var value_order_amount, value_current_stock, value_allocate_stock int64
