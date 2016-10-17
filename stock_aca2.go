@@ -713,7 +713,7 @@ func (t *TradeChaincode) allocate_entry(stub *shim.ChaincodeStub, args []string)
         }
 
         var value_order_amount, value_current_stock, value_allocate_stock int64
-        var UUID, key_orderer_code, key_accepter_code, key_product_code, value_order_status, value_last_updated_by, value_last_updated_datetime string
+        var UUID, key_orderer_department, key_orderer_code, key_accepter_code, key_product_code, value_order_status, value_last_updated_by, value_last_updated_datetime string
         UUID = args[0]
         key_orderer_department = args[1]
         key_orderer_code = args[2]
@@ -877,7 +877,7 @@ func (t *TradeChaincode) shipment_entry(stub *shim.ChaincodeStub, args []string)
         }
 
         var value_order_amount, value_current_stock, value_allocate_stock int64
-        var UUID, key_orderer_code, key_accepter_code, key_product_code, value_order_status, value_last_updated_by, value_last_updated_datetime string
+        var UUID, key_orderer_department, key_orderer_code, key_accepter_code, key_product_code, value_order_status, value_last_updated_by, value_last_updated_datetime string
         UUID = args[0]
         key_orderer_department = args[1]
         key_orderer_code = args[2]
