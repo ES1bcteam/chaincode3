@@ -715,7 +715,6 @@ func (t *TradeChaincode) allocate_entry(stub *shim.ChaincodeStub, args []string)
         upd_o_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
         upd_o_col2 := shim.Column{Value: &shim.Column_String_{String_: key_orderer_code}}
         upd_o_col3 := shim.Column{Value: &shim.Column_String_{String_: UUID}}
-        upd_o_col3 := shim.Column{Value: &shim.Column_String_{String_: key_orderer_code}}
         upd_o_col4 := shim.Column{Value: &shim.Column_String_{String_: key_accepter_code}}
         upd_o_col5 := shim.Column{Value: &shim.Column_String_{String_: key_product_code}}
         upd_o_col6 := shim.Column{Value: &shim.Column_Int64{Int64: value_order_amount}}
