@@ -82,8 +82,8 @@ func (t *TradeChaincode) Init(stub *shim.ChaincodeStub, function string, args []
         // テーブル名：order
         err_order := stub.CreateTable("order", []*shim.ColumnDefinition{
                 &shim.ColumnDefinition{"key_system_code", shim.ColumnDefinition_STRING, true},
-                &shim.ColumnDefinition{"key_UUID", shim.ColumnDefinition_STRING, true},
                 &shim.ColumnDefinition{"key_orderer_code", shim.ColumnDefinition_STRING, true},
+                &shim.ColumnDefinition{"key_UUID", shim.ColumnDefinition_STRING, true},
                 &shim.ColumnDefinition{"key_accepter_code", shim.ColumnDefinition_STRING, true},
                 &shim.ColumnDefinition{"key_product_code", shim.ColumnDefinition_STRING, true},
                 &shim.ColumnDefinition{"value_order_amount", shim.ColumnDefinition_INT64, false},
@@ -388,8 +388,8 @@ func (t *TradeChaincode) Query(stub *shim.ChaincodeStub, function string, args [
 
                                 // 構造体の定義
                                 type res_order_search struct {
-                                        UUID string // 番号
                                         Key_orderer_code string // 注文者
+                                        UUID string // 番号
                                         Key_accepter_code string // 受注者
                                         Key_product_code string // 商品コード
                                         Value_order_amount int64 // 取引数
@@ -408,8 +408,8 @@ func (t *TradeChaincode) Query(stub *shim.ChaincodeStub, function string, args [
                                                 } else {
                                                         // 文字列型の場合.GetString_()を使う
                                                         var myRes res_order_search
-                                                        myRes.UUID    = row.Columns[1].GetString_()
-                                                        myRes.Key_orderer_code  = row.Columns[2].GetString_()
+                                                        myRes.Key_orderer_code  = row.Columns[1].GetString_()
+                                                        myRes.UUID    = row.Columns[2].GetString_()
                                                         myRes.Key_accepter_code = row.Columns[3].GetString_()
                                                         myRes.Key_product_code = row.Columns[4].GetString_()
                                                         myRes.Value_order_amount = row.Columns[5].GetInt64()
@@ -571,8 +571,8 @@ func (t *TradeChaincode) order_entry(stub *shim.ChaincodeStub, args []string) ([
         _, err = stub.InsertRow("order", shim.Row{
                 Columns: []*shim.Column{
                         &shim.Column{Value: &shim.Column_String_{String_: key_system_code}},              // args[0]
-                        &shim.Column{Value: &shim.Column_String_{String_: UUID}},                         // args[1]
-                        &shim.Column{Value: &shim.Column_String_{String_: key_orderer_code}},             // args[2]
+                        &shim.Column{Value: &shim.Column_String_{String_: key_orderer_code}},             // args[1]
+                        &shim.Column{Value: &shim.Column_String_{String_: UUID}},                         // args[2]
                         &shim.Column{Value: &shim.Column_String_{String_: key_accepter_code}},            // args[3]
                         &shim.Column{Value: &shim.Column_String_{String_: key_product_code}},             // args[4]
                         &shim.Column{Value: &shim.Column_Int64{Int64: value_order_amount}},               // args[5]
@@ -713,7 +713,8 @@ func (t *TradeChaincode) allocate_entry(stub *shim.ChaincodeStub, args []string)
 
         var o_columns []*shim.Column
         upd_o_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
-        upd_o_col2 := shim.Column{Value: &shim.Column_String_{String_: UUID}}
+        upd_o_col2 := shim.Column{Value: &shim.Column_String_{String_: key_orderer_code}}
+        upd_o_col3 := shim.Column{Value: &shim.Column_String_{String_: UUID}}
         upd_o_col3 := shim.Column{Value: &shim.Column_String_{String_: key_orderer_code}}
         upd_o_col4 := shim.Column{Value: &shim.Column_String_{String_: key_accepter_code}}
         upd_o_col5 := shim.Column{Value: &shim.Column_String_{String_: key_product_code}}
@@ -857,8 +858,8 @@ func (t *TradeChaincode) shipment_entry(stub *shim.ChaincodeStub, args []string)
 
         var o_columns []*shim.Column
         upd_o_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
-        upd_o_col2 := shim.Column{Value: &shim.Column_String_{String_: UUID}}
-        upd_o_col3 := shim.Column{Value: &shim.Column_String_{String_: key_orderer_code}}
+        upd_o_col2 := shim.Column{Value: &shim.Column_String_{String_: key_orderer_code}}
+        upd_o_col3 := shim.Column{Value: &shim.Column_String_{String_: UUID}}
         upd_o_col4 := shim.Column{Value: &shim.Column_String_{String_: key_accepter_code}}
         upd_o_col5 := shim.Column{Value: &shim.Column_String_{String_: key_product_code}}
         upd_o_col6 := shim.Column{Value: &shim.Column_Int64{Int64: value_order_amount}}
