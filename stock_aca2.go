@@ -741,7 +741,6 @@ func (t *TradeChaincode) allocate_entry(stub *shim.ChaincodeStub, args []string)
                         if !ok {
                                 rowChannel = nil
                         } else {
-                                key_orderer_code   = row.Columns[3].GetString_()
                                 key_accepter_code  = row.Columns[4].GetString_()
                                 key_product_code   = row.Columns[5].GetString_()
                                 value_order_amount = row.Columns[6].GetInt64()
