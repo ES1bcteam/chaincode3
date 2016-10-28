@@ -22,7 +22,7 @@ package main
 import (
         "errors"
         "fmt"
-        "time"
+//        "time"
         "encoding/json"
         "strconv"
 //      "github.com/op/go-logging"
@@ -653,7 +653,8 @@ func (t *TradeChaincode) order_entry(stub *shim.ChaincodeStub, args []string) ([
 
         // Valueの内容をJSON形式で登録する
         const layout2 = "2006-01-02 15:04:05"
-        value_last_updated_datetime = time.Now().Format(layout2)
+//        value_last_updated_datetime = time.Now().Format(layout2)
+        value_last_updated_datetime = "2016-10-28 00:00:00"
 
         type order_table struct {
                 key_orderer_department  string
@@ -816,7 +817,8 @@ func (t *TradeChaincode) allocate_entry(stub *shim.ChaincodeStub, args []string)
         // 取引データ更新
         value_order_status = "ALLOCATED"
         const layout2 = "2006-01-02 15:04:05"
-        value_last_updated_datetime = time.Now().Format(layout2)
+//        value_last_updated_datetime = time.Now().Format(layout2)
+        value_last_updated_datetime = "2016-10-28 00:00:00"
 
         var o_columns []*shim.Column
         upd_o_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
@@ -968,7 +970,8 @@ func (t *TradeChaincode) shipment_entry(stub *shim.ChaincodeStub, args []string)
         // 取引データ更新
         value_order_status = "SHIPPED"
         const layout2 = "2006-01-02 15:04:05"
-        value_last_updated_datetime = time.Now().Format(layout2)
+//        value_last_updated_datetime = time.Now().Format(layout2)
+        value_last_updated_datetime = "2016-10-28 00:00:00"
 
         var o_columns []*shim.Column
         upd_o_col1 := shim.Column{Value: &shim.Column_String_{String_: key_system_code}}
